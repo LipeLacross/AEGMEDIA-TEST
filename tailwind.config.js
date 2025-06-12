@@ -1,35 +1,30 @@
-// tailwind.config.js
+// tailwind.config.js - Configuração atualizada para Tailwind CSS 3.4+
 module.exports = {
   content: [
     './components/**/*.{js,vue,ts}',
     './layouts/**/*.vue',
     './pages/**/*.vue',
     './plugins/**/*.{js,ts}',
-    './app.vue',
-    './nuxt.config.{js,ts}',
     './composables/**/*.{js,ts}',
-    './utils/**/*.{js,ts}'
+    './utils/**/*.{js,ts}',
+    './app.vue',
+    './error.vue'
   ],
   theme: {
-    fontFamily: {
-      sans: ['Inter', 'ui-sans-serif', 'system-ui', 'sans-serif'],
-      mono: ['JetBrains Mono', 'ui-monospace', 'monospace']
-    },
     extend: {
       colors: {
-        // Cores principais da AutoShield
         primary: {
           50: '#ecfdf5',
           100: '#d1fae5',
           200: '#a7f3d0',
           300: '#6ee7b7',
           400: '#34d399',
-          500: '#10b981', // Cor principal
+          500: '#10b981', // Verde AutoShield principal
           600: '#059669',
           700: '#047857',
           800: '#065f46',
           900: '#064e3b',
-          DEFAULT: '#10b981'
+          950: '#022c22'
         },
         secondary: {
           50: '#eff6ff',
@@ -42,51 +37,12 @@ module.exports = {
           700: '#1d4ed8',
           800: '#1e40af',
           900: '#1e3a8a',
-          DEFAULT: '#3b82f6'
-        },
-        gray: {
-          50: '#f9fafb',
-          100: '#f3f4f6',
-          200: '#e5e7eb',
-          300: '#d1d5db',
-          400: '#9ca3af',
-          500: '#6b7280',
-          600: '#4b5563',
-          700: '#374151',
-          800: '#1f2937',
-          900: '#111827',
-          DEFAULT: '#6b7280'
-        },
-        success: '#10b981',
-        warning: '#f59e0b',
-        error: '#ef4444',
-        info: '#3b82f6'
-      },
-      spacing: {
-        18: '4.5rem',
-        88: '22rem',
-        128: '32rem'
-      },
-      screens: {
-        'xs': '475px',
-        '3xl': '1600px'
-      },
-      container: {
-        center: true,
-        padding: {
-          DEFAULT: '1rem',
-          sm: '2rem',
-          lg: '4rem',
-          xl: '5rem',
-          '2xl': '6rem'
-        },
-        screens: {
-          sm: '640px',
-          md: '768px',
-          lg: '1024px',
-          xl: '1280px',
-          '2xl': '1400px'
+          950: '#172554'
         }
+      },
+      fontFamily: {
+        sans: ['Inter', 'ui-sans-serif', 'system-ui', 'sans-serif'],
+        mono: ['JetBrains Mono', 'ui-monospace', 'monospace']
       },
       animation: {
         'fade-in': 'fadeIn 0.5s ease-in-out',
@@ -104,20 +60,23 @@ module.exports = {
           '100%': { transform: 'translateY(0)', opacity: '1' }
         }
       },
-      boxShadow: {
-        'soft': '0 2px 15px 0 rgba(0, 0, 0, 0.1)',
-        'medium': '0 4px 25px 0 rgba(0, 0, 0, 0.15)',
-        'hard': '0 10px 40px 0 rgba(0, 0, 0, 0.2)'
+      container: {
+        center: true,
+        padding: {
+          DEFAULT: '1rem',
+          sm: '2rem',
+          lg: '4rem',
+          xl: '5rem',
+          '2xl': '6rem'
+        }
       }
     }
   },
   plugins: [
-    require('@tailwindcss/forms')({
-      strategy: 'class'
-    }),
+    require('@tailwindcss/forms'),
+    require('@tailwindcss/typography'),
     require('@tailwindcss/aspect-ratio'),
-    require('@tailwindcss/container-queries'),
-    require('@tailwindcss/typography')
+    require('@tailwindcss/container-queries')
   ],
   darkMode: 'class'
 }

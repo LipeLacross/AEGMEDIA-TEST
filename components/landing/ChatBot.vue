@@ -1,80 +1,159 @@
+<!-- components/landing/ChatBot.vue - Chatbot com IA para AutoShield -->
 <template>
-  <div class="flex items-center space-x-4">
-    <div class="lg:max-w-[336px] w-full flex items-center relative px-5 py-3 border border-[#0c66ee] rounded-xl">
-      <span class="text-sm font-medium pr-5 py-3 text-[#0c66ee] border-r border-[#0c66ee]">{{ title }}</span>
-      <input
-        :type="type"
-        class="w-full text-lg font-medium text-right border-none ring-0 focus:outline-none focus:ring-0"
-        :name="name"
-        :value="defaultValue"
-      />
-    </div>
-    <div class="relative w-full max-w-[106px] sm:max-w-[159px]">
-      <button
-        type="button"
-        class="w-full flex items-center justify-center space-x-1 relative sm:px-6 py-[1.35rem] border border-[#0c66ee] rounded-xl text-sm font-medium"
-        @click="toggleDropdown"
-        @blur="toggleDropdown"
-      >
-        <img :src="`/img/${exchangeSelected.img}`" alt="" class="flex-shrink-0 h-6 w-6 rounded-full" />
-        <span class="ml-3 block truncate">{{ exchangeSelected.name }}</span>
-        <ChevronDownIcon :size="20" />
-      </button>
-      <transition name="transform-fade-down">
-        <ul
-          v-if="openDropdown"
-          class="absolute z-10 mt-1 w-full bg-white shadow-lg max-h-56 rounded-md py-1 text-base ring-1 ring-black ring-opacity-5 overflow-auto focus:outline-none sm:text-sm border border-[#0c66ee]"
-          tabindex="-1"
+  <div class="fixed bottom-6 right-6 z-50">
+    <!-- Botão Flutuante -->
+    <button
+      v-if="!isOpen"
+      @click="toggleChat"
+      class="bg-primary-500 hover:bg-primary-600 text-white rounded-full p-4 shadow-lg transition-all duration-300 hover:scale-110"
+    >
+      <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
+      </svg>
+    </button>
+
+    <!-- Janela do Chat -->
+    <div
+      v-if="isOpen"
+      class="bg-white rounded-lg shadow-2xl border border-gray-200 w-80 h-96 flex flex-col"
+    >
+      <!-- Header -->
+      <div class="bg-primary-500 text-white p-4 rounded-t-lg flex justify-between items-center">
+        <div class="flex items-center space-x-2">
+          <div class="w-3 h-3 bg-green-400 rounded-full animate-pulse"></div>
+          <span class="font-semibold">Assistente AutoShield</span>
+        </div>
+        <button @click="toggleChat" class="text-white hover:text-gray-200">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+          </svg>
+        </button>
+      </div>
+
+      <!-- Mensagens -->
+      <div class="flex-1 overflow-y-auto p-4 space-y-3" ref="messagesContainer">
+        <div
+          v-for="(message, index) in messages"
+          :key="index"
+          :class="[
+            'max-w-xs p-3 rounded-lg text-sm',
+            message.role === 'user'
+              ? 'bg-primary-500 text-white ml-auto'
+              : 'bg-gray-100 text-gray-800'
+          ]"
         >
-          <li
-            v-for="exchange in exchanges"
-            id="listbox-option-0"
-            :key="exchange.name"
-            class="text-gray-900 cursor-default select-none relative px-3 sm:px-5 py-2"
-            role="option"
+          {{ message.content }}
+        </div>
+        <div v-if="isTyping" class="bg-gray-100 text-gray-800 max-w-xs p-3 rounded-lg text-sm">
+          <div class="flex space-x-1">
+            <div class="w-2 h-2 bg-gray-400 rounded-full animate-bounce"></div>
+            <div class="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style="animation-delay: 0.1s"></div>
+            <div class="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style="animation-delay: 0.2s"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Input -->
+      <div class="p-4 border-t border-gray-200">
+        <form @submit.prevent="sendMessage" class="flex space-x-2">
+          <input
+            v-model="newMessage"
+            type="text"
+            placeholder="Digite sua dúvida sobre proteção veicular..."
+            class="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 text-sm"
+            :disabled="isTyping"
+          />
+          <button
+            type="submit"
+            :disabled="!newMessage.trim() || isTyping"
+            class="bg-primary-500 hover:bg-primary-600 disabled:bg-gray-300 text-white px-4 py-2 rounded-lg transition-colors"
           >
-            <div class="flex items-center">
-              <img :src="`/img/${exchange.img}`" alt="" class="flex-shrink-0 h-6 w-6 rounded-full" />
-              <span class="font-normal ml-3 block truncate">{{ exchange.name }}</span>
-            </div>
-          </li>
-        </ul>
-      </transition>
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" />
+            </svg>
+          </button>
+        </form>
+      </div>
     </div>
   </div>
 </template>
 
-<script setup>
-defineProps({
-  title: {
-    type: String,
-    default: ''
-  },
-  name: {
-    type: String,
-    required: true,
-    default: ''
-  },
-  defaultValue: {
-    type: [Number, String],
-    default: ''
-  },
-  exchangeSelected: {
-    type: Object,
-    required: true
-  },
-  exchanges: {
-    type: Array,
-    required: true
-  },
-  type: {
-    type: String,
-    default: 'text'
-  }
-})
+<script setup lang="ts">
+const isOpen = ref(false)
+const newMessage = ref('')
+const isTyping = ref(false)
+const messagesContainer = ref<HTMLElement>()
 
-const openDropdown = ref(false)
-const toggleDropdown = () => {
-  openDropdown.value = !openDropdown.value
+const messages = ref([
+  {
+    role: 'assistant',
+    content: 'Olá! Sou o assistente da AutoShield. Como posso ajudá-lo com proteção veicular?'
+  }
+])
+
+const toggleChat = () => {
+  isOpen.value = !isOpen.value
+  if (isOpen.value) {
+    nextTick(() => {
+      scrollToBottom()
+    })
+  }
 }
+
+const sendMessage = async () => {
+  if (!newMessage.value.trim()) return
+
+  const userMessage = newMessage.value
+  messages.value.push({
+    role: 'user',
+    content: userMessage
+  })
+
+  newMessage.value = ''
+  isTyping.value = true
+
+  nextTick(() => {
+    scrollToBottom()
+  })
+
+  try {
+    const response = await $fetch('/api/chat', {
+      method: 'POST',
+      body: {
+        message: userMessage,
+        context: messages.value.slice(-10) // Últimas 10 mensagens para contexto
+      }
+    })
+
+    messages.value.push({
+      role: 'assistant',
+      content: response.reply
+    })
+  } catch (error) {
+    messages.value.push({
+      role: 'assistant',
+      content: 'Desculpe, estou com dificuldades no momento. Tente novamente ou entre em contato pelo WhatsApp (11) 9999-9999.'
+    })
+  } finally {
+    isTyping.value = false
+    nextTick(() => {
+      scrollToBottom()
+    })
+  }
+}
+
+const scrollToBottom = () => {
+  if (messagesContainer.value) {
+    messagesContainer.value.scrollTop = messagesContainer.value.scrollHeight
+  }
+}
+
+// Inicializar chat com mensagem de boas-vindas
+onMounted(() => {
+  setTimeout(() => {
+    if (!isOpen.value) {
+      // Mostrar notificação de que o assistente está disponível
+    }
+  }, 5000)
+})
 </script>
