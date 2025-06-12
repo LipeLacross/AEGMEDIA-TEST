@@ -1,26 +1,37 @@
-@import "tailwindcss";
-@import "tailwindcss/utilities";
+/* assets/css/main.css */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 
-.transform-fade-down-enter-active,
-.transform-fade-down-leave-active {
-  @apply transition-all translate-y-0 duration-300;
+@layer components {
+  .btn-primary {
+    @apply bg-emerald-600 text-white px-6 py-3 rounded-lg hover:bg-emerald-700 transition-colors;
+  }
+
+  .transform-fade-down-enter-active,
+  .transform-fade-down-leave-active {
+    @apply transition-all translate-y-0 duration-300;
+  }
+
+  .transform-fade-down-enter, .transform-fade-down-leave-to {
+    @apply opacity-0 transform -translate-y-2;
+  }
+
+  input::-webkit-outer-spin-button,
+  input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
+
+  input[type=number] {
+    -moz-appearance: textfield;
+  }
 }
-.transform-fade-down-enter, .transform-fade-down-leave-to /* .fade-leave-active below version 2.1.8 */ {
-  @apply opacity-0 transform -translate-y-2;
-}
 
-.paragraph {
-  @apply text-gray-700 tracking-wide leading-relaxed;
-}
-
-
-/* for remove arrow spinner button on input number */
-input::-webkit-outer-spin-button,
-input::-webkit-inner-spin-button {
-  -webkit-appearance: none;
-  margin: 0;
-}
-
-input[type=number] {
-  -moz-appearance: textfield;
+/* Cores personalizadas para tema de proteção veicular */
+@layer base {
+  :root {
+    --color-primary: 16 185 129;
+    --color-secondary: 59 130 246;
+  }
 }
