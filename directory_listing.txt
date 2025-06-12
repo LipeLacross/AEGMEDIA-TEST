@@ -1,0 +1,1620 @@
+|-- CONTRIBUTING.md
+|-- Extra/
+  |-- Old/
+    |-- Projeto Landing Page para Empresa de Proteção Veic.pdf
+    |-- e o esquma de templates tem para nuxt_ de landing.pdf
+    |-- melhor melhor o uso de cada ferramentas ocm exempl.pdf
+  |-- Teste Prático - Desencolvimento de projeto com IA.pdf
+  |-- ideas.txt.txt
+  |-- me dê o escopo do projeto inteiro com huggin face.pdf
+|-- LICENSE
+|-- README.md
+|-- READMEd.md
+|-- assets/
+  |-- css/
+|-- components/
+  |-- LineChart.vue
+  |-- NavLink.vue
+  |-- base/
+    |-- Accordion.vue
+    |-- Button.vue
+    |-- Footer.vue
+    |-- Navbar.vue
+    |-- Section.vue
+  |-- landing/
+    |-- BuyTradeImage.vue
+    |-- CryptoStatistic.vue
+    |-- Exchange.vue
+    |-- ListItem.vue
+    |-- PartnerImage.vue
+    |-- Step.vue
+    |-- TradingToolImage.vue
+|-- mixins/
+  |-- aos.js
+|-- nuxt.config.js
+|-- package-lock.json
+|-- package.json
+|-- pages/
+  |-- index.vue
+|-- plugins/
+  |-- mdi.js
+  |-- smooth-scroll.js
+|-- public/
+  |-- favicon.svg
+  |-- img/
+    |-- advanced-trading-tools.webp
+    |-- bg-trading-tools.webp
+    |-- buy-and-trade.webp
+    |-- country-icon/
+      |-- eng.png
+    |-- crypto-icon/
+      |-- 2share.png
+      |-- bitcoin-asia.png
+      |-- bitcoin.png
+      |-- dogecoin.png
+      |-- ethereum.png
+      |-- frog.png
+      |-- metacraft.png
+      |-- moonrock.png
+      |-- musk-doge.png
+      |-- ninjafloki.png
+      |-- pappay.png
+      |-- solana.png
+    |-- faq.webp
+    |-- getting-started/
+      |-- arrow.png
+      |-- buy-crypto.png
+      |-- fund.png
+      |-- sign-up.png
+    |-- hero-image.webp
+    |-- industry-leading-security.webp
+    |-- logo/
+      |-- favicon.svg
+      |-- nefa.svg
+    |-- nefa-cc.webp
+    |-- partner/
+      |-- background.png
+      |-- clever.png
+      |-- diamon-cutts.png
+      |-- gambio.png
+      |-- swiss-finance.png
+    |-- pattern/
+      |-- ellipse-1.png
+      |-- ellipse-2.png
+      |-- ellipse-3.png
+      |-- star.png
+    |-- thumbnail.jpg
+|-- static/
+  |-- favicon.ico
+|-- tailwind.config.js
+|-- vercel.json
+|-- yarn.lock
+
+
+File contents:
+
+|-- CONTRIBUTING.md
+  Content:
+    All Contributors
+    - Lipelacross (Creator)
+|-- Extra/
+  |-- Old/
+    |-- Projeto Landing Page para Empresa de Proteção Veic.pdf
+    |-- e o esquma de templates tem para nuxt_ de landing.pdf
+    |-- melhor melhor o uso de cada ferramentas ocm exempl.pdf
+  |-- Teste Prático - Desencolvimento de projeto com IA.pdf
+  |-- ideas.txt.txt
+  |-- me dê o escopo do projeto inteiro com huggin face.pdf
+|-- LICENSE
+|-- README.md
+  Content:
+    # NEFA Landing Page
+    
+    Free landing page template built using Nuxt 2 and Tailwindcss 3
+    
+    > [LIVE DEMO](https://nefa.vercel.app/)
+    
+    ![Thumbnail](assets/img/thumbnail.jpg)
+    
+    ## Project Structure
+    
+    .  
+    ├── assets  
+    │ ├── css  
+    │ └── img  
+    ├── components  
+    │ └── base  
+    ├── layouts  
+    ├── mixins  
+    ├── pages  
+    ├── plugins  
+    ├── static  
+    ├── README.md  
+    ├── nuxt.config.js  
+    ├── package.json  
+    └── tailwind.config.js  
+    
+    ## Getting Started
+    
+    ```bash
+    # clone this repository or click 'use this template' button
+    $ git clone https://github.com/RSurya99/nefa.git
+    
+    # install dependencies
+    $ yarn install
+    
+    # serve with hot reload at localhost:3000
+    $ yarn dev
+    
+    # build for production and launch server
+    $ yarn build
+    $ yarn start
+    
+    # generate static project
+    $ yarn generate
+    ```
+    
+    ## Other version of NEFA
+    - [React NEFA](https://github.com/hakimov-dev/nefa-react) by [Muhammadamin](https://github.com/hakimov-dev)
+    
+    Use it for learn, but please don’t republish, redistribute, or resell the template.
+    
+    Code by [rsurya99](https://github.com/rsurya99)  
+    UI/UX by [irvanmoses](https://www.facebook.com/irvan.moses)
+|-- READMEd.md
+  Content:
+    # AEGMEDIA-TEST
+    
+    [![Nuxt UI Pro](https://img.shields.io/badge/Made%20with-Nuxt%20UI%20Pro-00DC82?logo=nuxt&labelColor=020420)](https://ui.nuxt.com/pro)
+    [![Deploy to NuxtHub](https://img.shields.io/badge/Deploy%20to-NuxtHub-00DC82?logo=nuxt&labelColor=020420)](https://hub.nuxt.com/new?repo=nuxt-ui-pro/landing)
+    
+    This template lets you build a landing page with [Nuxt UI Pro](https://ui.nuxt.com/pro) quickly.
+    
+    - [Live demo](https://landing-template.nuxt.dev/)
+    - [Documentation](https://ui.nuxt.com/getting-started/installation/pro/nuxt)
+    
+    <a href="https://landing-template.nuxt.dev/" target="_blank">
+      <picture>
+        <source media="(prefers-color-scheme: dark)" srcset="https://assets.hub.nuxt.com/eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJodHRwczovL2xhbmRpbmctdGVtcGxhdGUubnV4dC5kZXYiLCJpYXQiOjE3Mzk0NjMzNzV9.ja2nUDVOoIFvyaMmg9Jn51uNMoYYt4WA1KWUQBWwUPo.jpg?theme=dark">
+        <source media="(prefers-color-scheme: light)" srcset="https://assets.hub.nuxt.com/eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJodHRwczovL2xhbmRpbmctdGVtcGxhdGUubnV4dC5kZXYiLCJpYXQiOjE3Mzk0NjMzNzV9.ja2nUDVOoIFvyaMmg9Jn51uNMoYYt4WA1KWUQBWwUPo.jpg?theme=light">
+        <img alt="Nuxt Landing Template" src="https://assets.hub.nuxt.com/eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJodHRwczovL2xhbmRpbmctdGVtcGxhdGUubnV4dC5kZXYiLCJpYXQiOjE3Mzk0NjMzNzV9.ja2nUDVOoIFvyaMmg9Jn51uNMoYYt4WA1KWUQBWwUPo.jpg">
+      </picture>
+    </a>
+    
+    ## Quick Start
+    
+    ```bash [Terminal]
+    npx nuxi init -t github:nuxt-ui-pro/landing
+    ```
+    
+    ## Setup
+    
+    Make sure to install the dependencies:
+    
+    ```bash
+    pnpm install
+    ```
+    
+    ## Development Server
+    
+    Start the development server on `http://localhost:3000`:
+    
+    ```bash
+    pnpm dev
+    ```
+    
+    ## Production
+    
+    Build the application for production:
+    
+    ```bash
+    pnpm build
+    ```
+    
+    Locally preview production build:
+    
+    ```bash
+    pnpm preview
+    ```
+    
+    Check out the [deployment documentation](https://nuxt.com/docs/getting-started/deployment) for more information.
+    
+    ## Renovate integration
+    
+    Install [Renovate GitHub app](https://github.com/apps/renovate/installations/select_target) on your repository and you are good to go.
+|-- assets/
+  |-- css/
+|-- components/
+  |-- LineChart.vue
+    Content:
+      <script setup lang="ts">
+      import { Chart, registerables } from 'chart.js'
+      import { LineChart } from 'vue-chart-3'
+      import { computed } from 'vue'
+      
+      Chart.register(...registerables)
+      
+      const props = defineProps({
+        datasets: {
+          type: Array as () => number[],
+          required: true
+        },
+        increase: {
+          type: Boolean,
+          required: true
+        }
+      })
+      
+      const chartData = computed(() => ({
+        labels: ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun', 'Jul'],
+        datasets: [{
+          label: 'Performance',
+          data: props.datasets,
+          borderColor: props.increase ? '#28C165' : '#F4574D',
+          backgroundColor: props.increase ? 'rgba(40, 193, 101, 0.1)' : 'rgba(244, 87, 77, 0.1)',
+          tension: 0.4,
+          fill: true
+        }]
+      }))
+      
+      const chartOptions = computed(() => ({
+        responsive: true,
+        plugins: { legend: { display: false } },
+        scales: { x: { display: false }, y: { display: false } },
+        elements: { point: { radius: 0 } }
+      }))
+      </script>
+      
+      <template>
+        <LineChart :chart-data="chartData" :options="chartOptions" class="w-28 h-12 -mx-2" />
+      </template>
+  |-- NavLink.vue
+    Content:
+      <template>
+        <li class="w-full">
+          <a
+            class="md:px-4 py-2 text-sm bg-transparent rounded-lg text-[#666666] hover:text-gray-900 focus:outline-none focus:shadow-outline"
+            :href="url"
+          >
+            {{ name }}
+          </a>
+        </li>
+      </template>
+      <script>
+      export default {
+        props: {
+          name: {
+            type: String,
+            required: true,
+          },
+          url: {
+            type: String,
+            required: true,
+          },
+        },
+      }
+      </script>
+  |-- base/
+    |-- Accordion.vue
+      Content:
+        <template>
+          <li class="relative border-b-2 border-gray-200">
+            <button type="button" class="w-full py-4 text-left" @click="selected = !selected">
+              <div class="flex items-center justify-between">
+                <span class="font-medium">{{ accordion.title }}</span>
+                <ChevronUpIcon v-if="selected" :size="20" />
+                <ChevronDownIcon v-else :size="20" />
+              </div>
+            </button>
+        
+            <transition name="slide">
+              <div v-if="selected" class="relative overflow-hidden transition-all duration-700" style="">
+                <div class="py-2">
+                  <p class="text-sm text-gray-700 tracking-wide leading-relaxed">
+                    {{ accordion.description }}
+                  </p>
+                </div>
+              </div>
+            </transition>
+          </li>
+        </template>
+        <script>
+        export default {
+          name: 'BaseAccordion',
+          props: {
+            accordion: {
+              type: Object,
+              required: true,
+            },
+          },
+          data() {
+            return {
+              selected: false,
+            }
+          },
+        }
+        </script>
+    |-- Button.vue
+      Content:
+        <template>
+          <button
+            class="text-sm text-center rounded-full hover:shadow-md hover:shadow-[#0c66ee]/50 transition duration-300"
+            v-bind="$attrs"
+            v-on="$listeners"
+          >
+            <slot></slot>
+          </button>
+        </template>
+        <script>
+        export default {
+          name: 'BaseButton',
+          inheritAttrs: false,
+        }
+        </script>
+    |-- Footer.vue
+      Content:
+        <template>
+          <footer class="max-w-screen-xl px-8 mx-auto">
+            <div class="w-full border-y border-gray-200">
+              <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-0">
+                <!-- Seção Logo e Links Rápidos -->
+                <div class="p-6 lg:p-12 flex flex-col lg:flex-row lg:items-start lg:gap-10 border-b md:border-b-0 md:border-r border-gray-200">
+                  <NuxtLink to="/" class="hidden xl:block mb-6 lg:mb-0">
+                    <NuxtImg src="/img/logo/nefa.svg" width="96" height="40" alt="NEFA Logo" class="w-24" />
+                  </NuxtLink>
+                  <ul class="space-y-4">
+                    <NavLink v-for="link in quickLinks" :key="link.name" :name="link.name" :url="link.url" />
+                  </ul>
+                </div>
+        
+                <!-- Seção Institucional -->
+                <div class="p-6 lg:p-12 border-b md:border-b-0 lg:border-r border-gray-200">
+                  <ul class="space-y-4">
+                    <NavLink v-for="link in institutional" :key="link.name" :name="link.name" :url="link.url" />
+                  </ul>
+                </div>
+        
+                <!-- Seção Suporte -->
+                <div class="p-6 lg:p-12 border-b md:border-b-0 border-gray-200">
+                  <ul class="space-y-4">
+                    <NavLink v-for="link in support" :key="link.name" :name="link.name" :url="link.url" />
+                  </ul>
+                </div>
+        
+                <!-- Newsletter -->
+                <div class="p-6 lg:p-12 space-y-6">
+                  <div class="space-y-2">
+                    <h3 class="text-sm font-semibold text-gray-600">Newsletter</h3>
+                    <p class="text-sm text-gray-500">Receba atualizações e insights exclusivos</p>
+                  </div>
+                  <form @submit.prevent="subscribeNewsletter" class="flex gap-2">
+                    <input
+                      v-model="email"
+                      type="email"
+                      placeholder="Seu melhor e-mail"
+                      class="w-full px-4 py-3 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                      required
+                    />
+                    <button
+                      type="submit"
+                      class="px-4 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+                    >
+                      <ArrowRightIcon class="w-5 h-5" />
+                    </button>
+                  </form>
+                </div>
+              </div>
+            </div>
+        
+            <!-- Copyright -->
+            <div class="py-8 text-center text-sm text-gray-500">
+              &copy; {{ new Date().getFullYear() }} NEFA LLC. Todos os direitos reservados
+            </div>
+          </footer>
+        </template>
+        
+        <script setup lang="ts">
+        const email = ref('')
+        
+        const quickLinks = [
+          { name: 'Criptomoedas', url: '#' },
+          { name: 'Exchanges', url: '#' },
+          { name: 'Watchlist', url: '#' },
+          { name: 'Portfólio', url: '#' },
+          { name: 'NFT', url: '#' }
+        ]
+        
+        const institutional = [
+          { name: 'Produtos', url: '#' },
+          { name: 'Sobre Nós', url: '#' },
+          { name: 'Carreiras', url: '#' },
+          { name: 'Blog', url: '#' },
+          { name: 'Segurança', url: '#' }
+        ]
+        
+        const support = [
+          { name: 'Central de Ajuda', url: '#' },
+          { name: 'Contato', url: '#' },
+          { name: 'Status do Sistema', url: '#' },
+          { name: 'Política de Privacidade', url: '#' }
+        ]
+        
+        const subscribeNewsletter = () => {
+          // Lógica de inscrição
+          console.log('E-mail cadastrado:', email.value)
+          email.value = ''
+        }
+        </script>
+    |-- Navbar.vue
+      Content:
+        <template>
+          <nav class="sticky top-0 bg-white/95 backdrop-blur-md z-50 shadow-sm">
+            <div class="max-w-screen-xl mx-auto px-4 sm:px-6 lg:px-8">
+              <div class="flex items-center justify-between h-16 lg:h-20">
+                <!-- Logo -->
+                <NuxtLink to="/" class="flex-shrink-0 hover:opacity-80 transition-opacity">
+                  <NuxtImg
+                    src="/img/logo/nefa.svg"
+                    width="112"
+                    height="48"
+                    alt="NEFA Logo"
+                    class="h-12 w-28 lg:h-14 lg:w-32"
+                    loading="eager"
+                  />
+                </NuxtLink>
+        
+                <!-- Desktop Navigation -->
+                <div class="hidden lg:flex items-center gap-8">
+                  <NavLink
+                    v-for="link in mainLinks"
+                    :key="link.name"
+                    v-bind="link"
+                    class="text-gray-600 hover:text-blue-600 transition-colors"
+                  />
+        
+                  <!-- Products Dropdown -->
+                  <div ref="dropdownRef" class="relative">
+                    <button
+                      @click="toggleDropdown"
+                      class="flex items-center gap-1 text-gray-600 hover:text-blue-600 transition-colors"
+                      aria-haspopup="true"
+                      :aria-expanded="isDropdownOpen"
+                    >
+                      <span>Produtos</span>
+                      <Icon
+                        name="material-symbols:keyboard-arrow-down-rounded"
+                        class="w-5 h-5 transition-transform duration-200"
+                        :class="{ 'rotate-180': isDropdownOpen }"
+                      />
+                    </button>
+        
+                    <Transition name="slide">
+                      <div
+                        v-if="isDropdownOpen"
+                        class="absolute top-full left-0 w-48 mt-2 bg-white rounded-lg shadow-xl ring-1 ring-gray-900/5"
+                      >
+                        <NuxtLink
+                          v-for="product in products"
+                          :key="product.name"
+                          :to="product.url"
+                          class="block px-4 py-2.5 text-sm text-gray-7 hover:bg-gray-50/50 transition-colors"
+                          @click="isDropdownOpen = false"
+                        >
+                          {{ product.name }}
+                        </NuxtLink>
+                      </div>
+                    </Transition>
+                  </div>
+                </div>
+        
+                <!-- Auth Buttons -->
+                <div class="flex items-center gap-3">
+                  <BaseButton
+                    variant="outline"
+                    class="max-lg:hidden px-6 py-2.5 border-blue-600 text-blue-600 hover:bg-blue-50"
+                  >
+                    Entrar
+                  </BaseButton>
+                  <BaseButton class="px-6 py-2.5 bg-gradient-to-r from-blue-600 to-blue-500 hover:shadow-lg">
+                    Cadastre-se
+                  </BaseButton>
+                </div>
+        
+                <!-- Mobile Menu Toggle -->
+                <button
+                  @click="isMobileMenuOpen = !isMobileMenuOpen"
+                  class="lg:hidden p-2 rounded-lg text-gray-600 hover:bg-gray-100"
+                  aria-label="Menu mobile"
+                >
+                  <Icon
+                    :name="isMobileMenuOpen ? 'material-symbols:close-rounded' : 'material-symbols:menu-rounded'"
+                    class="w-6 h-6"
+                  />
+                </button>
+              </div>
+        
+              <!-- Mobile Menu -->
+              <Transition name="slide">
+                <div v-if="isMobileMenuOpen" class="lg:hidden py-4 space-y-2">
+                  <NavLink
+                    v-for="link in mainLinks"
+                    :key="link.name"
+                    v-bind="link"
+                    class="block px-4 py-2.5 rounded-lg hover:bg-gray-50"
+                    @click="isMobileMenuOpen = false"
+                  />
+                </div>
+              </Transition>
+            </div>
+          </nav>
+        </template>
+        
+        <script setup lang="ts">
+        import { ref } from 'vue'
+        import { onClickOutside } from '@vueuse/core'
+        
+        const isDropdownOpen = ref(false)
+        const isMobileMenuOpen = ref(false)
+        const dropdownRef = ref<HTMLElement | null>(null)
+        
+        const mainLinks = [
+          { name: 'Criptomoedas', url: '#' },
+          { name: 'Exchanges', url: '#' },
+          { name: 'Watchlist', url: '#' },
+          { name: 'NFT', url: '#' },
+          { name: 'Portfólio', url: '#' }
+        ]
+        
+        const products = [
+          { name: 'Exchange', url: '#' },
+          { name: 'Carteira', url: '#' },
+          { name: 'Explorador', url: '#' },
+          { name: 'Gráficos', url: '#' }
+        ]
+        
+        const toggleDropdown = () => {
+          isDropdownOpen.value = !isDropdownOpen.value
+        }
+        
+        onClickOutside(dropdownRef, () => {
+          isDropdownOpen.value = false
+        })
+        </script>
+    |-- Section.vue
+      Content:
+        <template>
+          <div class="relative max-w-screen-xl px-4 sm:px-8 mx-auto grid grid-cols-12 gap-x-6 overflow-hidden" v-bind="$attrs">
+            <slot></slot>
+          </div>
+        </template>
+        <script>
+        export default {
+          name: 'BaseSection',
+        }
+        </script>
+  |-- landing/
+    |-- BuyTradeImage.vue
+      Content:
+        <template>
+          <div class="col-span-12 lg:col-span-6" v-bind="$attrs">
+            <div class="w-full">
+              <img src="/img/buy-and-trade.webp" class="mt-4 sm:-mt-4" alt="" />
+            </div>
+          </div>
+        </template>
+    |-- CryptoStatistic.vue
+      Content:
+        <template>
+          <div class="w-full lg:w-1/3 mt-6 lg:mt-0 overflow-hidden space-y-6" v-bind="$attrs">
+            <div class="w-full flex items-center justify-between">
+              <span class="font-medium">{{ title }}</span>
+              <button
+                class="px-3 py-1 text-sm font-medium text-blue-500 flex items-center space-x-1 rounded-md hover:bg-blue-50 transition duration-300"
+              >
+                <span>More</span>
+                <ChevronRightIcon :size="16" />
+              </button>
+            </div>
+            <div class="flex flex-col">
+              <div class="-my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
+                <div class="px-2 sm:px-6 py-2 align-middle inline-block min-w-full overflow-hidden">
+                  <table class="min-w-full">
+                    <thead>
+                      <tr>
+                        <th class="text-left text-sm font-medium text-gray-500">Name</th>
+                        <th class="text-left text-sm font-medium text-gray-500">Price</th>
+                        <th class="hidden sm:block text-left text-sm font-medium text-gray-500">Chart</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr v-for="data in datasets" :key="data.id" class="border-b border-gray-200">
+                        <td class="py-4 whitespace-nowrap">
+                          <div class="flex items-center space-x-2">
+                            <NuxtImg
+                              v-if="data.logo"
+                              :src="`/img/crypto-icon/${data.logo}`"
+                              :alt="data.name"
+                              width="24"
+                              height="24"
+                              class="h-6 w-6"
+                              loading="lazy"
+                            />
+                            <span v-if="!data.logo" class="h-6 w-6 flex items-center justify-center bg-gray-100 rounded-full"></span>
+                            <span>{{ data.name }}</span>
+                          </div>
+                        </td>
+                        <td class="py-4 whitespace-nowrap">
+                          <div class="flex items-center">
+                            <PlusThickIcon v-if="data.increase" :size="14" class="text-emerald-500" />
+                            <MinusThickIcon v-else :size="14" class="text-red-500" />
+                            <span>${{ data.price }}</span>
+                          </div>
+                        </td>
+                        <td class="hidden sm:block whitespace-nowrap">
+                          <div>
+                            <LineChart class="w-28 h-12 -mx-2" :datasets="data.data" :increase="data.increase" />
+                          </div>
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+          </div>
+        </template>
+        
+        <script setup>
+        defineProps({
+          title: {
+            type: String,
+            default: ''
+          },
+          datasets: {
+            type: Array,
+            default: () => []
+          }
+        })
+        </script>
+    |-- Exchange.vue
+      Content:
+        <template>
+          <div class="flex items-center space-x-4">
+            <div class="lg:max-w-[336px] w-full flex items-center relative px-5 py-3 border border-[#0c66ee] rounded-xl">
+              <span class="text-sm font-medium pr-5 py-3 text-[#0c66ee] border-r border-[#0c66ee]">{{ title }}</span>
+              <input
+                :type="type"
+                class="w-full text-lg font-medium text-right border-none ring-0 focus:outline-none focus:ring-0"
+                :name="name"
+                :value="defaultValue"
+              />
+            </div>
+            <div class="relative w-full max-w-[106px] sm:max-w-[159px]">
+              <button
+                type="button"
+                class="w-full flex items-center justify-center space-x-1 relative sm:px-6 py-[1.35rem] border border-[#0c66ee] rounded-xl text-sm font-medium"
+                @click="toggleDropdown"
+                @blur="toggleDropdown"
+              >
+                <img :src="`/img/${exchangeSelected.img}`" alt="" class="flex-shrink-0 h-6 w-6 rounded-full" />
+                <span class="ml-3 block truncate">{{ exchangeSelected.name }}</span>
+                <ChevronDownIcon :size="20" />
+              </button>
+              <transition name="transform-fade-down">
+                <ul
+                  v-if="openDropdown"
+                  class="absolute z-10 mt-1 w-full bg-white shadow-lg max-h-56 rounded-md py-1 text-base ring-1 ring-black ring-opacity-5 overflow-auto focus:outline-none sm:text-sm border border-[#0c66ee]"
+                  tabindex="-1"
+                >
+                  <li
+                    v-for="exchange in exchanges"
+                    id="listbox-option-0"
+                    :key="exchange.name"
+                    class="text-gray-900 cursor-default select-none relative px-3 sm:px-5 py-2"
+                    role="option"
+                  >
+                    <div class="flex items-center">
+                      <img :src="`/img/${exchange.img}`" alt="" class="flex-shrink-0 h-6 w-6 rounded-full" />
+                      <span class="font-normal ml-3 block truncate">{{ exchange.name }}</span>
+                    </div>
+                  </li>
+                </ul>
+              </transition>
+            </div>
+          </div>
+        </template>
+        
+        <script setup>
+        defineProps({
+          title: {
+            type: String,
+            default: ''
+          },
+          name: {
+            type: String,
+            required: true,
+            default: ''
+          },
+          defaultValue: {
+            type: [Number, String],
+            default: ''
+          },
+          exchangeSelected: {
+            type: Object,
+            required: true
+          },
+          exchanges: {
+            type: Array,
+            required: true
+          },
+          type: {
+            type: String,
+            default: 'text'
+          }
+        })
+        
+        const openDropdown = ref(false)
+        const toggleDropdown = () => {
+          openDropdown.value = !openDropdown.value
+        }
+        </script>
+    |-- ListItem.vue
+      Content:
+        <template>
+          <li class="space-y-2">
+            <div class="flex items-center space-x-2">
+              <CheckCircleIcon :size="20" class="text-[#0c66ee]" />
+              <span>{{ title }}</span>
+            </div>
+            <slot></slot>
+          </li>
+        </template>
+        <script setup>
+        defineProps({
+          title: {
+            type: String,
+            default: ''
+          }
+        })
+        </script>
+    |-- PartnerImage.vue
+      Content:
+        <template>
+          <div>
+            <img :src="`/img/partner/${img}`" class="sm:w-1/2 lg:w-72 mx-auto" :alt="img" />
+          </div>
+        </template>
+        <script setup>
+        defineProps({
+          img: {
+            type: String,
+            default: ''
+          }
+        })
+        </script>
+    |-- Step.vue
+      Content:
+        <template>
+          <div class="max-w-[280px] xl:max-w-[363px] space-y-6 sm:space-y-3 text-center">
+            <img :src="`/img/getting-started/${step.img}`" class="max-w-[245px] mx-auto" :alt="step.title" />
+            <h3 class="text-xl text-neutral-800 font-semibold">{{ step.title }}</h3>
+            <p class="text-sm text-gray-700 leading-relaxed">
+              {{ step.description }}
+            </p>
+          </div>
+        </template>
+        <script setup>
+        defineProps({
+          step: {
+            type: Object,
+            required: true
+          }
+        })
+        </script>
+    |-- TradingToolImage.vue
+      Content:
+        <template>
+          <div class="col-span-12 lg:col-span-6" v-bind="$attrs">
+            <div class="w-full sm:mt-20 xl:mt-0">
+              <img src="/img/advanced-trading-tools.webp" class="w-full" alt="Advanced Trading Tools" />
+            </div>
+          </div>
+        </template>
+|-- mixins/
+  |-- aos.js
+    Content:
+      // mixins/aos.js
+      import AOS from 'aos'
+      import 'aos/dist/aos.css'
+      
+      export default {
+        mounted() {
+          AOS.init({ disable: 'phone' })
+        },
+      }
+|-- nuxt.config.js
+  Content:
+    import svgLoader from 'vite-svg-loader'
+    
+    export default defineNuxtConfig({
+      future: {
+        compatibilityVersion: 4,
+        compatibilityDate: '2025-06-12'
+      },
+      vite: {
+        plugins: [
+          svgLoader({
+            svgoConfig: {
+              multipass: true,
+              plugins: [
+                'preset-default',
+                { name: 'removeDimensions', active: true },
+                { name: 'sortAttrs', params: { xmlnsOrder: 'alphabetical' } }
+              ]
+            }
+          })
+        ]
+      },
+      modules: [
+        '@nuxtjs/tailwindcss',
+        '@nuxt/image',
+        '@nuxtjs/turnstile',
+        'nuxt-svgo-loader',
+        '@nuxt/icon'
+      ],
+      icon: {
+        iconify: {
+          icons: [
+            '@iconify-json/uil',
+            '@iconify-json/material-design-icons'
+          ]
+        }
+      },
+      app: {
+        head: {
+          title: 'NEFA - Crypto Platform',
+          htmlAttrs: {
+            lang: 'pt-BR',
+            dir: 'ltr'
+          },
+          meta: [
+            { charset: 'utf-8' },
+            { name: 'viewport', content: 'width=device-width, initial-scale=1' },
+            {
+              name: 'description',
+              content: 'Plataforma líder em negociação de criptomoedas'
+            },
+            {
+              property: 'og:image',
+              content: '/og-image.jpg'
+            }
+          ],
+          link: [
+            {
+              rel: 'icon',
+              type: 'image/svg+xml',
+              href: '/favicon.svg'
+            },
+            {
+              rel: 'stylesheet',
+              href: 'https://fonts.googleapis.com/css2?family=Poppins:wght@100..900&display=swap',
+              crossorigin: 'anonymous'
+            }
+          ],
+          script: [
+            {
+              src: 'https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.js',
+              defer: true,
+              body: true
+            }
+          ]
+        }
+      },
+      css: [
+        '~/assets/css/main.css',
+        'aos/dist/aos.css'
+      ],
+      components: {
+        dirs: [
+          '~/components',
+          '~/components/base'
+        ],
+        global: true
+      },
+      postcss: {
+        plugins: {
+          '@tailwindcss/nesting': {},
+          '@tailwindcss/postcss': {},
+          autoprefixer: {},
+          ...(process.env.NODE_ENV === 'production' ? { cssnano: {} } : {})
+        }
+      },
+      // Correção: build deve estar dentro do objeto principal
+      build: {
+        transpile: ['vue-chart-3', 'chart.js']
+      }
+    })
+|-- package-lock.json
+|-- package.json
+|-- pages/
+  |-- index.vue
+    Content:
+      
+      <template>
+      
+        <div class="w-full">
+          <!-- Hero section -->
+          <section id="hero" class="w-full pb-24">
+            <BaseSection>
+              <div class="col-span-12 lg:col-span-6 mt-12 xl:mt-10 space-y-4 sm:space-y-6 px-6 text-center sm:text-left">
+                <span data-aos="fade-right" data-aos-once="true" class="text-base text-gradient font-semibold uppercase"
+                  >Sign Up Today</span
+                >
+                <h1
+                  data-aos="fade-right"
+                  data-aos-once="true"
+                  class="text-[2.5rem] sm:text-5xl xl:text-6xl font-bold leading-tight capitalize sm:pr-8 xl:pr-10"
+                >
+                  The World's <span class="text-header-gradient">Fastest Growing</span> Crypto Web App
+                </h1>
+                <p data-aos="fade-down" data-aos-once="true" data-aos-delay="300" class="paragraph hidden sm:block">
+                  Buy and sell 200+ cryptocurrencies with 20+ flat currencies using bank transfers or your credit/debit card.
+                </p>
+                <div
+                  data-aos="fade-up"
+                  data-aos-once="true"
+                  data-aos-delay="700"
+                  class="flex flex-col sm:flex-row space-y-4 sm:space-y-0 sm:space-x-4 mt-2"
+                >
+                  <BaseButton
+                    class="max-w-full px-8 py-4 bg-gradient-to-r from-[#468ef9] to-[#0c66ee] border border-[#0c66ee] text-white"
+                  >
+                    Get Started
+                  </BaseButton>
+                  <BaseButton
+                    class="max-w-full px-6 py-4 bg-inherit text-gradient border border-[#0c66ee] flex items-center justify-center"
+                  >
+                    <span>Download App</span>
+                    <ChevronDownIcon :size="20" class="mt-1 text-[#0c66ee]" />
+                  </BaseButton>
+                </div>
+              </div>
+              <div class="hidden sm:block col-span-12 lg:col-span-6">
+                <div class="w-full">
+                  <NuxtImg
+                    data-aos="fade-up"
+                    data-aos-once="true"
+                    src="/img/hero-image.webp"
+                    class="-mt-4"
+                    alt="Hero Image"
+                  />
+                </div>
+              </div>
+              <NuxtImg
+                data-aos="fade-up"
+                data-aos-delay="300"
+                src="/img/pattern/ellipse-1.png"
+                class="hidden sm:block absolute bottom-12 xl:bottom-16 left-4 xl:left-0 w-6"
+                alt="Ellipse 1"
+              />
+              <NuxtImg
+                data-aos="fade-up"
+                data-aos-delay="300"
+                src="/img/pattern/ellipse-2.png"
+                class="hidden sm:block absolute top-4 sm:top-10 right-64 sm:right-96 xl:right-[32rem] w-6"
+                alt="Ellipse 2"
+              />
+              <NuxtImg
+                data-aos="fade-up"
+                data-aos-delay="300"
+                src="/img/pattern/ellipse-3.png"
+                class="hidden sm:block absolute bottom-56 right-24 w-6"
+                alt="Ellipse 3"
+              />
+              <NuxtImg
+                data-aos="fade-up"
+                data-aos-delay="300"
+                src="/img/pattern/star.png"
+                class="hidden sm:block absolute top-20 sm:top-28 right-16 lg:right-0 lg:left-[30rem] w-8"
+                alt="Star"
+              />
+            </BaseSection>
+          </section>
+      
+          <!-- Crypto statistic section -->
+          <section
+            class="max-w-screen-xl mx-2 sm:mx-auto px-4 sm:px-6 lg:px-0 py-6 pb-20 sm:py-8 rounded-[2.25rem] sm:rounded-xl bg-white shadow-lg sm:shadow-md transform lg:-translate-y-12"
+          >
+            <div class="w-full flex flex-col lg:flex-row items-center justify-center">
+              <LandingCryptoStatistic
+                data-aos="fade-up"
+                title="🔥 Trending"
+                :datasets="trendings"
+                class="xl:border-r border-gray-200 lg:px-8"
+              />
+              <LandingCryptoStatistic
+                data-aos="fade-up"
+                data-aos-delay="150"
+                title="🚀 Top Gainers"
+                :datasets="topGainers"
+                class="xl:border-r border-gray-200 lg:px-8"
+              />
+              <LandingCryptoStatistic
+                data-aos="fade-up"
+                data-aos-delay="300"
+                title="💎 Recently Added"
+                :datasets="recents"
+                class="lg:px-8"
+              />
+            </div>
+          </section>
+      
+          <!-- Buy and trade section -->
+          <section class="w-full my-24">
+            <BaseSection>
+              <LandingBuyTradeImage class="sm:hidden mb-8" />
+              <div data-aos="fade-right" class="col-span-12 lg:col-span-6 mt-4 xl:mt-20 space-y-6 px-4">
+                <h2 class="text-4xl font-semibold sm:pr-8 xl:pr-12">
+                  Buy & trade on the <br class="hidden sm:block" />
+                  original crypto exchange.
+                </h2>
+                <p class="paragraph">
+                  Buy now and get 40% extra bonus Minimum pre-sale amount 25 Crypto Coin. We accept BTC crypto-currency
+                </p>
+                <div class="space-y-6 lg:pr-12">
+                  <LandingExchange
+                    title="Amount"
+                    name="amount"
+                    type="number"
+                    default-value="5.000"
+                    :exchange-selected="currencySelected"
+                    :exchanges="currencies"
+                  />
+                  <LandingExchange
+                    title="Get"
+                    name="get"
+                    type="number"
+                    default-value="0.10901"
+                    :exchange-selected="cryptoSelected"
+                    :exchanges="cryptocurrencies"
+                  />
+                  <BaseButton class="w-full px-5 py-4 bg-blue-gradient text-white text-base font-medium">Buy Now</BaseButton>
+                </div>
+              </div>
+              <LandingBuyTradeImage data-aos="fade-left" class="hidden sm:block" />
+            </BaseSection>
+          </section>
+      
+          <!-- Partners section -->
+          <section class="bg-partner relative max-w-full sm:mx-6 my-24 shadow sm:rounded-2xl overflow-hidden">
+            <div class="w-full px-6 sm:px-0 py-16 flex flex-col items-center justify-center space-y-4 text-center">
+              <h3 data-aos="flip-down" class="text-2xl text-neutral-800 font-semibold">Trusted Partners Worldwide</h3>
+              <p data-aos="flip-down" class="paragraph">We're partners with countless major organisations around the globe</p>
+              <div data-aos="f fade-up" class="flex flex-wrap items-center justify-center">
+                <LandingPartnerImage
+                  v-for="img in ['clever.png', 'diamon-cutts.png', 'swiss-finance.png', 'gambio.png']"
+                  :key="img"
+                  :img="img"
+                />
+              </div>
+            </div>
+          </section>
+      
+          <!-- Credit card section -->
+          <section class="w-full my-36">
+            <BaseSection data-aos="fade-down">
+              <div class="col-span-12 lg:col-span-7">
+                <div class="w-full">
+                  <NuxtImg src="/img/nefa-cc.webp" class="w-[95%]" alt="NEFA Credit Card" />
+                </div>
+              </div>
+              <div class="col-span-12 lg:col-span-5 space-y-6 px-4 sm:px-6 mt-20">
+                <h2 class="text-4xl font-semibold">
+                  Introducing the <span class="text-header-gradient">NEFA</span> Credit Card
+                </h2>
+                <p class="paragraph">Subject to cardholder and rewards terms which will be available at application.</p>
+                <ul class="space-y-4 sm:space-y-2">
+                  <LandingListItem title="Up to 3% back on purchases" />
+                  <LandingListItem title="Earn rewards in bitcoin or any crypto on NEFA" />
+                  <LandingListItem title="No annual fee" />
+                </ul>
+                <BaseButton
+                  class="w-full sm:max-w-[240px] px-10 py-4 bg-inherit text-gradient border border-[#0c66ee] text-base"
+                  >Join the waitlist</BaseButton
+                >
+              </div>
+            </BaseSection>
+          </section>
+      
+          <!-- Advanced trading tools section -->
+          <section class="bg-trading-tools relative max-w-full sm:mx-4 my-20 py-16 shadow rounded-2xl overflow-hidden">
+            <div class="relative max-w-screen-xl px-4 sm:px-2 mx-auto grid grid-cols-12 gap-x-6">
+              <LandingTradingToolImage class="sm:hidden" />
+              <div data-aos="fade-right" class="col-span-12 lg:col-span-6 space-y-8 sm:space-y-6 px-4 sm:px-6 mt-8">
+                <h2 class="text-4xl font-semibold">Advanced Trading <span class="text-header-gradient">Tools</span></h2>
+                <div class="space-y-2">
+                  <h4 class="text-lg font-medium">Professional Access, Non-stop Availability</h4>
+                  <p class="paragraph text-sm xl:text-base">
+                    We provide premium access to crypto trading for both individuals and institutions through high liquidity,
+                    reliable order execution and constant uptime.
+                  </p>
+                </div>
+                <div class="space-y-2">
+                  <h4 class="text-lg font-medium">A Range of Powerful Apis</h4>
+                  <p class="paragraph text-sm xl:text-base">
+                    Set up your own trading interface or deploy your algorithmic strategy with our high-performance FIX and
+                    HTTP APIs. Connect to our WebSocket for real-time data streaming.
+                  </p>
+                </div>
+                <div class="space-y-2">
+                  <h4 class="text-lg font-medium">Customer Support</h4>
+                  <p class="paragraph text-sm xl:text-base">
+                    Premium 24/7 support available to all customers worldwide by phone or email. Dedicated account managers
+                    for partners.
+                  </p>
+                </div>
+                <div class="flex flex-col sm:flex-row">
+                  <BaseButton class="px-10 py-4 bg-inherit text-gradient border border-[#4A8FF6] text-base">
+                    Get Started
+                  </BaseButton>
+                  <BaseButton class="bg-inherit text-[#4A8FF6] px-10 py-4 text-center underline rounded-full">
+                    Learn More
+                  </BaseButton>
+                </div>
+              </div>
+              <LandingTradingToolImage data-aos="fade-left" class="hidden sm:block" />
+            </div>
+          </section>
+      
+          <!-- Industry-leading security section -->
+          <section class="w-full my-24">
+            <div class="relative max-w-screen-xl px-8 mx-auto grid grid-cols-12 gap-x-6">
+              <div data-aos="fade-right" class="col-span-12 lg:col-span-6">
+                <div class="w-full">
+                  <NuxtImg src="/img/industry-leading-security.webp" class="w-full" alt="Industry Leading Security" />
+                </div>
+              </div>
+              <div data-aos="fade-left" class="col-span-12 lg:col-span-5 space-y-8 sm:space-y-6 mt-8 xl:px-8">
+                <h2 class="text-4xl font-semibold">Industry-leading security from day one</h2>
+                <ul class="space-y-8 sm:space-y-4">
+                  <LandingListItem title="Safety, security and compliance">
+                    <p class="text-sm text-gray-700 leading-relaxed">
+                      NEFA is a licensed New York trust company that undergoes regular bank exams and is subject to the
+                      cybersecurity audits conducted by the New York Department of Financial Services.
+                      <span class="underline">Learn more</span> about our commitment to security.
+                    </p>
+                  </LandingListItem>
+                  <LandingListItem title="Hardware security keys">
+                    <p class="text-sm text-gray-700 leading-relaxed">
+                      With NEFA you can secure your account with a hardware security key via WebAuthn.
+                    </p>
+                  </LandingListItem>
+                  <LandingListItem title="SOC Certifications">
+                    <p class="text-sm text-gray-700 leading-relaxed">
+                      NEFA is <span class="underline">SOC 1 Type 2</span> and
+                      <span class="underline">SOC 2 Type 2</span> compliant. We are the world’s first cryptocurrency exchange
+                      and custodian to complete these exams.
+                    </p>
+                  </LandingListItem>
+                </ul>
+              </div>
+            </div>
+          </section>
+      
+          <!-- Getting started section -->
+          <section class="bg-trading-tools relative max-w-full sm:mx-4 xl:mx-10 my-24 shadow sm:rounded-2xl overflow-hidden">
+            <div class="w-full py-16 flex flex-col items-center">
+              <h2 data-aos="flip-down" class="text-3xl sm:text-4xl font-semibold text-center">
+                Get started in just a few minutes
+              </h2>
+              <div
+                data-aos="fade-up"
+                class="relative w-full flex flex-col lg:flex-row items-center justify-between space-y-12 lg:space-y-0 px-4 xl:px-10 mt-16 sm:mt-8"
+              >
+                <LandingStep v-for="step in steps" :key="step.title" :step="step" />
+                <NuxtImg
+                  src="/img/getting-started/arrow.png"
+                  class="hidden lg:inline-block absolute top-32 left-64 xl:left-[22rem] w-24 xl:w-[9.5rem]"
+                  alt="Arrow"
+                />
+                <NuxtImg
+                  src="/img/getting-started/arrow.png"
+                  class="hidden lg:inline-block absolute top-32 right-64 xl:right-[22rem] w-24 xl:w-[9.5rem]"
+                  alt="Arrow"
+                />
+              </div>
+            </div>
+          </section>
+      
+          <!-- FAQ section -->
+          <section class="w-full my-24">
+            <BaseSection>
+              <div data-aos="fade-right" data-aos-delay="150" class="col-span-12 lg:col-span-6">
+                <div class="w-full">
+                  <NuxtImg src="/img/faq.webp" class="w-full" alt="FAQ" />
+                </div>
+              </div>
+              <div data-aos="fade-left" data-aos-delay="150" class="col-span-12 lg:col-span-6 px-4 sm:px-6 mt-8">
+                <span class="text-base text-gradient font-semibound uppercase mb-4 sm:mb-2">Support</span>
+                <h2 class="text-3xl sm:text-4xl font-semibold mb-10 sm:mb-6">Frequently asked questions</h2>
+                <ul class="shadow-box">
+                  <BaseAccordion v-for="(accordion, index) in accordions" :key="index" :accordion="accordion" />
+                </ul>
+              </div>
+            </BaseSection>
+          </section>
+      
+          <div class="w-full my-10 flex justify-center">
+            <a
+              v-smooth-scroll
+              data-aos="flip-down"
+              data-aos-delay="150"
+              href="#navbar"
+              class="px-6 py-3 flex items-center space-x-2 bg-[#FAFAFA] hover:bg-gray-100 hover:shadow-md border border-[#DDDDDD] rounded-md text-gray-700"
+            >
+              <span>Back to top</span>
+              <ArrowUpIcon :size="20" />
+            </a>
+          </div>
+        </div>
+      </template>
+      
+      <script setup>
+      import { ref } from 'vue'
+      // Importe os componentes usados diretamente se não estiverem registrados globalmente
+      import LandingBuyTradeImage from '@/components/landing/BuyTradeImage.vue'
+      import LandingExchange from '@/components/landing/Exchange.vue'
+      import LandingPartnerImage from '@/components/landing/PartnerImage.vue'
+      import LandingListItem from '@/components/landing/ListItem.vue'
+      import LandingStep from '@/components/landing/Step.vue'
+      import LandingTradingToolImage from '@/components/landing/TradingToolImage.vue'
+      import BaseSection from '@/components/base/Section.vue'
+      import BaseButton from '@/components/base/Button.vue'
+      import BaseAccordion from '@/components/base/Accordion.vue'
+      import LandingCryptoStatistic from '@/components/landing/CryptoStatistic.vue'
+      
+      // Dados da página
+      const selected = ref(0)
+      const dropdownConcurency = ref(false)
+      const dropdownCrypto = ref(false)
+      const currencySelected = ref({
+        img: 'country-icon/eng.png',
+        name: 'USD',
+      })
+      const currencies = ref([
+        {
+          img: 'country-icon/eng.png',
+          name: 'USD',
+        },
+      ])
+      const cryptoSelected = ref({
+        img: 'crypto-icon/bitcoin.png',
+        name: 'BTC',
+      })
+      const cryptocurrencies = ref([
+        {
+          img: 'crypto-icon/bitcoin.png',
+          name: 'BTC',
+        },
+      ])
+      const trendings = ref([
+        {
+          id: 1,
+          name: 'Bitcoin',
+          price: 43180.13,
+          logo: 'bitcoin.png',
+          increase: true,
+          data: [40, 35, 60, 75, 60, 75, 50],
+        },
+        {
+          id: 2,
+          name: 'Ethereum',
+          price: 3480.65,
+          logo: 'ethereum.png',
+          increase: false,
+          data: [25, 30, 60, 50, 80, 55, 80],
+        },
+        {
+          id: 3,
+          name: 'Solana',
+          price: 150.2,
+          logo: 'solana.png',
+          increase: true,
+          data: [40, 45, 40, 80, 50, 60, 35],
+        },
+        {
+          id: 4,
+          name: 'Dogecoin',
+          price: 0.1572,
+          logo: 'dogecoin.png',
+          increase: true,
+          data: [35, 70, 60, 80, 50, 60, 40],
+        },
+      ])
+      const topGainers = ref([
+        {
+          id: 1,
+          name: 'PAPPAY',
+          price: 0.00374,
+          logo: 'pappay.png',
+          increase: true,
+          data: [30, 50, 45, 60, 70, 40, 45],
+        },
+        {
+          id: 2,
+          name: 'Bitcoin Asia',
+          price: 0.02096,
+          logo: 'bitcoin-asia.png',
+          increase: true,
+          data: [25, 60, 50, 60, 35, 50, 70],
+        },
+        {
+          id: 3,
+          name: 'MoonRock',
+          price: 0.004907,
+          logo: 'moonrock.png',
+          increase: true,
+          data: [40, 35, 40, 25, 50, 70, 45],
+        },
+        {
+          id: 4,
+          name: 'NinjaFloki',
+          price: 0.000123,
+          logo: 'ninjafloki.png',
+          increase: true,
+          data: [45, 35, 40, 30, 25, 45, 35],
+        },
+      ])
+      const recents = ref([
+        {
+          id: 1,
+          name: 'MetaCraft',
+          price: 0.0608,
+          logo: 'metacraft.png',
+          increase: false,
+          data: [40, 50, 45, 60, 35, 40, 45],
+        },
+        {
+          id: 2,
+          name: 'Frog',
+          price: 0.5875,
+          logo: 'frog.png',
+          increase: false,
+          data: [25, 50, 45, 48, 40, 60, 45],
+        },
+        {
+          id: 3,
+          name: 'Musk Doge',
+          price: 0.04041,
+          logo: 'musk-doge.png',
+          increase: true,
+          data: [25, 35, 60, 45, 50, 45, 45],
+        },
+        {
+          id: 4,
+          name: '2SHARE',
+          price: 1366.24,
+          logo: '2share.png',
+          increase: true,
+          data: [35, 30, 60, 50, 35, 45, 40],
+        },
+      ])
+      const accordions = ref([
+        {
+          title: 'Why should I choose NEFA?',
+          description:
+            "We're industry pioneers, having been in the cryptocurrency industry since 2016. We've facilitated more than 21 billion USD worth of transactions on our exchange for customers in over 40 countries. Today, we're trusted by over 8 million customers around the world and have received praise for our easy-to-use app, secure wallet, and range of features.",
+        },
+        {
+          title: 'How secure is NEFA?',
+          description:
+            "We're industry pioneers, having been in the cryptocurrency industry since 2016. We've facilitated more than 21 billion USD worth of transactions on our exchange for customers in over 40 countries. Today, we're trusted by over million customers around the world and have received praise for our easy-to-use app, secure wallet, and range of features.",
+        },
+        {
+          title: 'Do I have to buy a whole Bitcoin?',
+          description:
+            "We're industry pioneers, having been in the cryptocurrency industry since 6. We've facilitated more than 21 billion USD worth of transactions on our exchange for customers in over 40 countries. Today, we're trusted by over million customers around the world and have received praise for our easy-to-use app, secure wallet, and range of features.",
+        },
+        {
+          title: 'How do I actually buy Bitcoin?',
+          description:
+            "We're industry pioneers, having been in the cryptocurrency industry since 2016. We've facilitated more than 21 billion USD worth of transactions on our exchange for customers in over 40 countries. Today, we're trusted by over million customers around the world and have received praise for our easy-to-use app, secure wallet, and range of features.",
+        },
+      ])
+      const steps = ref([
+        {
+          img: 'sign-up.png',
+          title: 'Sign Up',
+          description:
+            'Sign up for your free NEFA Wallet on web, iOS or Android and follow our easy process to set up your profile',
+        },
+        {
+          img: 'fund.png',
+          title: 'Fund',
+          description:
+            'Choose your preferred payment method such as bank transfer or credit card to top up your NEFA Wallet',
+        },
+        {
+          img: 'buy-crypto.png',
+          title: 'Buy Crypto',
+          description:
+            'Buy Bitcoin or Ethereum, then securely store it in your Wallet or send it on easily to your friends anywhere',
+        },
+      ])
+      </script>
+      
+      <style scoped>
+      .text-header-gradient {
+        background: rgb(57, 132, 244);
+        background: linear-gradient(169.4deg, #3984f4 -6.01%, #0cd3ff 36.87%, #2f7cf0 78.04%, #0e65e8 103.77%);
+        background-clip: text;
+        -webkit-text-fill-color: transparent;
+      }
+      .bg-partner {
+        background: url('/img/partner/background.png');
+        background-size: cover;
+        background-position: center;
+      }
+      .bg-trading-tools {
+        background: url('/img/bg-trading-tools.webp');
+        background-size: cover;
+        background-position: center;
+      }
+      .max-h-0 {
+        max-height: 0;
+      }
+      </style>
+|-- plugins/
+  |-- mdi.js
+    Content:
+      // plugins/mdi.js
+      import { defineNuxtPlugin } from '#app'
+      
+      // Importe cada ícone individualmente
+      import ChevronDownIcon from 'vue-material-design-icons/ChevronDown.vue'
+      import ChevronUpIcon from 'vue-material-design-icons/ChevronUp.vue'
+      import ChevronRightIcon from 'vue-material-design-icons/ChevronRight.vue'
+      import PlusThickIcon from 'vue-material-design-icons/PlusThick.vue'
+      import MinusThickIcon from 'vue-material-design-icons/MinusThick.vue'
+      import ArrowUpIcon from 'vue-material-design-icons/ArrowUp.vue'
+      import ArrowRightIcon from 'vue-material-design-icons/ArrowRight.vue'
+      import CheckCircleIcon from 'vue-material-design-icons/CheckCircle.vue'
+      import SegmentIcon from 'vue-material-design-icons/Menu.vue' // Menu.vue é o ícone "hamburger" (Segment)
+      import CloseIcon from 'vue-material-design-icons/Close.vue'
+      import MenuIcon from 'vue-material-design-icons/Menu.vue'
+      import XIcon from 'vue-material-design-icons/Close.vue' // XIcon normalmente é o mesmo que CloseIcon
+      
+      export default defineNuxtPlugin((nuxtApp) => {
+        // Registro de componentes globais
+        nuxtApp.vueApp.component('ChevronDownIcon', ChevronDownIcon)
+        nuxtApp.vueApp.component('ChevronUpIcon', ChevronUpIcon)
+        nuxtApp.vueApp.component('ChevronRightIcon', ChevronRightIcon)
+        nuxtApp.vueApp.component('PlusThickIcon', PlusThickIcon)
+        nuxtApp.vueApp.component('MinusThickIcon', MinusThickIcon)
+        nuxtApp.vueApp.component('ArrowUpIcon', ArrowUpIcon)
+        nuxtApp.vueApp.component('ArrowRightIcon', ArrowRightIcon)
+        nuxtApp.vueApp.component('CheckCircleIcon', CheckCircleIcon)
+        nuxtApp.vueApp.component('SegmentIcon', SegmentIcon)
+        nuxtApp.vueApp.component('CloseIcon', CloseIcon)
+        nuxtApp.vueApp.component('MenuIcon', MenuIcon)
+        // Se quiser usar XIcon separado, basta registrar novamente com outro nome
+        // nuxtApp.vueApp.component('XIcon', XIcon)
+      })
+  |-- smooth-scroll.js
+    Content:
+      import { defineNuxtPlugin } from '#app';
+      import Vue3SmoothScroll from 'vue3-smooth-scroll';
+      
+      export default defineNuxtPlugin((nuxtApp) => {
+        nuxtApp.vueApp.use(Vue3SmoothScroll, {
+          duration: 1000,
+          offset: -50
+        });
+      });
+|-- public/
+  |-- favicon.svg
+  |-- img/
+    |-- advanced-trading-tools.webp
+    |-- bg-trading-tools.webp
+    |-- buy-and-trade.webp
+    |-- country-icon/
+      |-- eng.png
+    |-- crypto-icon/
+      |-- 2share.png
+      |-- bitcoin-asia.png
+      |-- bitcoin.png
+      |-- dogecoin.png
+      |-- ethereum.png
+      |-- frog.png
+      |-- metacraft.png
+      |-- moonrock.png
+      |-- musk-doge.png
+      |-- ninjafloki.png
+      |-- pappay.png
+      |-- solana.png
+    |-- faq.webp
+    |-- getting-started/
+      |-- arrow.png
+      |-- buy-crypto.png
+      |-- fund.png
+      |-- sign-up.png
+    |-- hero-image.webp
+    |-- industry-leading-security.webp
+    |-- logo/
+      |-- favicon.svg
+      |-- nefa.svg
+    |-- nefa-cc.webp
+    |-- partner/
+      |-- background.png
+      |-- clever.png
+      |-- diamon-cutts.png
+      |-- gambio.png
+      |-- swiss-finance.png
+    |-- pattern/
+      |-- ellipse-1.png
+      |-- ellipse-2.png
+      |-- ellipse-3.png
+      |-- star.png
+    |-- thumbnail.jpg
+|-- static/
+  |-- favicon.ico
+|-- tailwind.config.js
+  Content:
+    module.exports = {
+      content: [
+        './components/**/*.{js,vue,ts}',
+        './layouts/**/*.vue',
+        './pages/**/*.vue',
+        './plugins/**/*.{js,ts}',
+        './app.vue',
+        './nuxt.config.{js,ts}',
+        './composables/**/*.{js,ts}',
+        './utils/**/*.{js,ts}'
+      ],
+      theme: {
+        fontFamily: {
+          sans: ['Poppins', 'sans-serif'],
+          mono: ['JetBrains Mono', 'monospace']
+        },
+        extend: {
+          colors: {
+            primary: {
+              DEFAULT: '#2563eb',
+              light: '#3b82f6',
+              dark: '#1d4ed8'
+            },
+            dark: '#0f172a',
+            secondary: {
+              DEFAULT: '#e11d48',
+              light: '#f43f5e'
+            }
+          },
+          spacing: {
+            18: '4.5rem',
+            128: '32rem'
+          },
+          container: {
+            center: true,
+            padding: '1.5rem',
+            screens: {
+              '2xl': '1440px'
+            }
+          }
+        },
+      },
+      plugins: [
+        require('@tailwindcss/forms')({
+          strategy: 'class'
+        }),
+        require('@tailwindcss/aspect-ratio'),
+        require('@tailwindcss/container-queries'),
+        require('@tailwindcss/typography')
+      ],
+      darkMode: 'class',
+      corePlugins: {
+        // Desativa o container padrão do Tailwind para usar sua configuração personalizada
+        container: false
+      }
+    }
+|-- vercel.json
+|-- yarn.lock
