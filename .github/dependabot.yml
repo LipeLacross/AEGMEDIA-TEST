@@ -1,7 +1,27 @@
-# .github/dependabot.yml - Versão Corrigida e Otimizada
+# .github/dependabot.yml - Configuração Otimizada para AutoShield
 version: 2
 updates:
-  - name: "Atualizações de Pacotes NPM"
+  - name: "Atualizações de Pacotes NPM (Críticas)"
+    package-manager: "npm"
+    directory: "/"
+    schedule:
+      interval: "daily"
+    open-pull-requests-limit: 5
+    reviewers:
+      - "LipeLacross"
+    assignees:
+      - "LipeLacross"
+    commit-message:
+      prefix: "deps"
+      include: "scope"
+    labels:
+      - "dependencies"
+      - "npm"
+      - "critical"
+    security-severity-threshold: "critical"
+    automerge: false
+
+  - name: "Atualizações de Pacotes NPM (Mínimas)"
     package-manager: "npm"
     directory: "/"
     schedule:
@@ -17,10 +37,9 @@ updates:
     labels:
       - "dependencies"
       - "npm"
+      - "minor"
+    security-severity-threshold: "low"
     automerge: false
-    ignore:
-      - dependency-name: "typescript@^5.8.3"
-      - dependency-name: "nuxt@^3.17.5"
 
   - name: "Atualizações de GitHub Actions"
     package-manager: "github-actions"
@@ -33,3 +52,29 @@ updates:
       - "github-actions"
       - "ci"
     automerge: false
+
+  - name: "Atualizações de Segurança (NPM)"
+    package-manager: "npm"
+    directory: "/"
+    schedule:
+      interval: "daily"
+    open-pull-requests-limit: 2
+    reviewers:
+      - "LipeLacross"
+    assignees:
+      - "LipeLacross"
+    commit-message:
+      prefix: "security"
+      include: "scope"
+    labels:
+      - "security"
+      - "npm"
+    security-severity-threshold: "critical"
+    automerge: false
+
+ignore:
+  # Controle de Versões
+  - dependency-name: "typescript@^5.8.3"
+  - dependency-name: "nuxt@^3.17.5"
+  - dependency-name: "vue@^3.2.0"
+  - dependency-name: "@nuxtjs/ui@^1.0.0"

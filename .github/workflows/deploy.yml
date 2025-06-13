@@ -6,7 +6,7 @@ on:
   workflow_dispatch:
     inputs:
       environment:
-        description: 'Environment to deploy'
+        description: 'Ambiente de destino'
         required: true
         default: 'production'
         type: choice
@@ -16,50 +16,99 @@ on:
 
 env:
   NODE_VERSION: 20
+  PRODUCTION_ENV: ${{ secrets.PRODUCTION_ENV }}
+  STAGING_ENV: ${{ secrets.STAGING_ENV }}
 
 jobs:
   deploy:
     name: Deploy to ${{ inputs.environment || 'production' }}
     runs-on: ubuntu-latest
     environment: ${{ inputs.environment || 'production' }}
+    concurrency:
+      group: ${{ runner.os }}-${{ inputs.environment || 'production' }}
+      cancel-in-progress: true
 
     permissions:
       contents: read
       deployments: write
+      security-events: write
 
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: ${{ env.NODE_VERSION }}
           cache: 'npm'
+          cache-dependency-path: '**/package-lock.json'
+
+      - name: Cache Nuxt Build
+        uses: actions/cache@v4
+        with:
+          path: |
+            .nuxt
+            node_modules
+          key: ${{ runner.os }}-nuxt-${{ hashFiles('package-lock.json') }}
 
       - name: Install Dependencies
         run: npm ci --production
+        env:
+          NODE_ENV: production
 
-      - name: Build for Production
+      - name: Build Application
         run: npm run build
         env:
           NODE_ENV: production
+          VITE_ENV: ${{ inputs.environment || 'production' }}
           BREVO_API_KEY: ${{ secrets.BREVO_API_KEY }}
           BREVO_LIST_ID: ${{ secrets.BREVO_LIST_ID }}
           HUGGINGFACE_TOKEN: ${{ secrets.HUGGINGFACE_TOKEN }}
 
-      - name: Deploy Application
+      - name: Run Deployment
         run: npm run deploy
         env:
-          BREVO_API_KEY: ${{ secrets.BREVO_API_KEY }}
-          BREVO_LIST_ID: ${{ secrets.BREVO_LIST_ID }}
+          DEPLOY_ENV: ${{ inputs.environment || 'production' }}
+          DEPLOYMENT_ENV: ${{ inputs.environment === 'production' ? secrets.PRODUCTION_ENV : secrets.STAGING_ENV }}
           HUGGINGFACE_TOKEN: ${{ secrets.HUGGINGFACE_TOKEN }}
 
       - name: Deployment Summary
         if: success()
         run: |
           echo "## 🚀 Deploy Concluído com Sucesso" >> $GITHUB_STEP_SUMMARY
-          echo "- **Ambiente**: ${{ inputs.environment || 'production' }}" >> $GITHUB_STEP_SUMMARY
-          echo "- **Commit**: ${{ github.sha }}" >> $GITHUB_STEP_SUMMARY
-          echo "- **Branch**: ${{ github.ref_name }}" >> $GITHUB_STEP_SUMMARY
-          echo "- **Data**: $(date -u '+%Y-%m-%d %H:%M:%S UTC')" >> $GITHUB_STEP_SUMMARY
+          echo "| **Detalhe** | **Valor** |" >> $GITHUB_STEP_SUMMARY
+          echo "|------------|----------|" >> $GITHUB_STEP_SUMMARY
+          echo "| Ambiente | ${{ inputs.environment || 'production' }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| Commit | ${{ github.sha }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| Branch | ${{ github.ref_name }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| Data | $(date -u '+%Y-%m-%d %H:%M:%S UTC') |" >> $GITHUB_STEP_SUMMARY
+          echo "| Versão Node | ${{ env.NODE_VERSION }} |" >> $GITHUB_STEP_SUMMARY
+
+      - name: Notificação de Deploy
+        if: success()
+        uses: slackapi/slack-github-action@v1.25.0
+        with:
+          payload: |
+            {
+              "text": "🚀 Deploy realizado com sucesso!",
+              "blocks": [
+                {
+                  "type": "section",
+                  "text": {
+                    "type": "mrkdwn",
+                    "text": "📦 **AutoShield** - ${{ inputs.environment || 'production' }}\n📌 *${{ github.workflow }}* - #${{ github.run_number }}\n🔗 <https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}|Detalhes>"
+                  }
+                }
+              ]
+            }
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+
+      - name: Limpeza de Cache
+        if: success()
+        run: |
+          echo "🧹 Limpando cache do Nuxt"
+          rm -rf .nuxt

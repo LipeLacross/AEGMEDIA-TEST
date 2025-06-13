@@ -2,13 +2,16 @@ name: CI/CD AutoShield
 
 on:
   push:
-    branches: [ main, develop ]
+    branches: [main, develop]
   pull_request:
-    branches: [ main ]
+    branches: [main]
   workflow_dispatch:
 
 env:
   NODE_VERSION_CACHE_KEY: v1
+  HUGGINGFACE_TOKEN: ${{ secrets.HUGGINGFACE_TOKEN }}
+  BREVO_API_KEY: ${{ secrets.BREVO_API_KEY }}
+  BREVO_LIST_ID: ${{ secrets.BREVO_LIST_ID }}
 
 jobs:
   ci:
@@ -17,8 +20,8 @@ jobs:
 
     strategy:
       matrix:
-        os: [ ubuntu-latest ]
-        node: [ 20, 22 ]
+        os: [ubuntu-latest]
+        node: [20, 22]
       fail-fast: false
 
     permissions:
@@ -43,6 +46,14 @@ jobs:
           cache: 'npm'
           cache-dependency-path: '**/package-lock.json'
 
+      - name: Cache Nuxt Build
+        uses: actions/cache@v4
+        with:
+          path: |
+            .nuxt
+            node_modules
+          key: ${{ runner.os }}-nuxt-${{ hashFiles('package-lock.json') }}
+
       - name: Install Dependencies
         run: npm ci --prefer-offline --no-audit
         env:
@@ -62,9 +73,13 @@ jobs:
         env:
           NODE_ENV: production
 
-      - name: Run Tests
-        run: npm run test
-        if: ${{ hashFiles('**/package.json') != '' && contains('["test"]', 'test') }}
+      - name: Run Unit Tests
+        run: npm run test:unit
+        env:
+          NODE_ENV: test
+
+      - name: Run Component Tests
+        run: npm run test:components
         env:
           NODE_ENV: test
 
@@ -72,7 +87,7 @@ jobs:
         id: audit
         run: |
           npm audit --audit-level=moderate --json > npm-audit-results.json || true
-          echo "vulnerabilities=$(cat npm-audit-results.json | jq '.metadata.vulnerabilities.total // 0')" >> $GITHUB_OUTPUT
+          echo "vulnerabilities=$(jq -r '.metadata.vulnerabilities.total // 0' npm-audit-results.json)" >> $GITHUB_OUTPUT
         continue-on-error: true
 
       - name: Upload Security Audit Results
@@ -82,20 +97,15 @@ jobs:
           name: security-audit-node-${{ matrix.node }}-${{ github.run_number }}
           path: npm-audit-results.json
           retention-days: 30
-          compression-level: 6
 
       - name: Verify Commit Message
         if: github.event_name == 'push'
         run: |
           COMMIT_MSG=$(git log -1 --format=%s)
-          echo "Verificando mensagem: $COMMIT_MSG"
-          
-          if [[ "$COMMIT_MSG" =~ ^(feat|fix|docs|style|refactor|test|chore|deps)(\(.+\))?: .+ ]]; then
-            echo "✅ Commit message válido: $COMMIT_MSG"
-          else
-            echo "❌ Commit message inválido: $COMMIT_MSG" >&2
-            echo "Formato esperado: type(scope): description" >&2
-            echo "Tipos válidos: feat, fix, docs, style, refactor, test, chore, deps" >&2
+          if [[ ! "$COMMIT_MSG" =~ ^(feat|fix|docs|style|refactor|test|chore|deps)(\(.+\))?: .+ ]]; then
+            echo "❌ Invalid commit message: $COMMIT_MSG"
+            echo "Expected format: type(scope): description"
+            echo "Valid types: feat, fix, docs, style, refactor, test, chore, deps"
             exit 1
           fi
 
@@ -119,29 +129,19 @@ jobs:
           node-version: 20
           cache: 'npm'
 
-      - name: Install Dependencies
+      - name: Install Production Dependencies
         run: npm ci --production
 
       - name: Advanced Security Audit
         id: security-audit
         run: |
-          echo "🔍 Executando auditoria de segurança avançada..."
           npm audit --audit-level=low --json > detailed-audit.json
-          
-          # Verificar vulnerabilidades críticas
-          CRITICAL=$(cat detailed-audit.json | jq '.metadata.vulnerabilities.critical // 0')
-          HIGH=$(cat detailed-audit.json | jq '.metadata.vulnerabilities.high // 0')
+          CRITICAL=$(jq -r '.metadata.vulnerabilities.critical // 0' detailed-audit.json)
+          HIGH=$(jq -r '.metadata.vulnerabilities.high // 0' detailed-audit.json)
           
           echo "critical-vulns=$CRITICAL" >> $GITHUB_OUTPUT
           echo "high-vulns=$HIGH" >> $GITHUB_OUTPUT
-          
-          if [ "$CRITICAL" -gt 0 ] || [ "$HIGH" -gt 0 ]; then
-            echo "⚠️ Vulnerabilidades críticas/altas encontradas: Critical=$CRITICAL, High=$HIGH"
-            echo "security-status=failed" >> $GITHUB_OUTPUT
-          else
-            echo "✅ Nenhuma vulnerabilidade crítica encontrada"
-            echo "security-status=passed" >> $GITHUB_OUTPUT
-          fi
+          echo "security-status=$([ "$CRITICAL" -gt 0 ] || [ "$HIGH" -gt 0 ] && echo 'failed' || echo 'passed')" >> $GITHUB_OUTPUT
         continue-on-error: true
 
       - name: Upload Detailed Audit
@@ -155,10 +155,64 @@ jobs:
       - name: Security Summary
         if: always()
         run: |
-          echo "## 🛡️ Relatório de Segurança" >> $GITHUB_STEP_SUMMARY
-          echo "| Métrica | Valor |" >> $GITHUB_STEP_SUMMARY
-          echo "|---------|-------|" >> $GITHUB_STEP_SUMMARY
+          echo "## 🛡️ Security Report" >> $GITHUB_STEP_SUMMARY
+          echo "| Metric | Value |" >> $GITHUB_STEP_SUMMARY
+          echo "|--------|-------|" >> $GITHUB_STEP_SUMMARY
           echo "| Status | ${{ steps.security-audit.outputs.security-status }} |" >> $GITHUB_STEP_SUMMARY
-          echo "| Vulnerabilidades Críticas | ${{ steps.security-audit.outputs.critical-vulns }} |" >> $GITHUB_STEP_SUMMARY
-          echo "| Vulnerabilidades Altas | ${{ steps.security-audit.outputs.high-vulns }} |" >> $GITHUB_STEP_SUMMARY
-          echo "| Data da Análise | $(date -u '+%Y-%m-%d %H:%M:%S UTC') |" >> $GITHUB_STEP_SUMMARY
+          echo "| Critical Vulnerabilities | ${{ steps.security-audit.outputs.critical-vulns }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| High Vulnerabilities | ${{ steps.security-audit.outputs.high-vulns }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| Analysis Date | $(date -u '+%Y-%m-%d %H:%M:%S UTC') |" >> $GITHUB_STEP_SUMMARY
+
+  deploy-preview:
+    name: Deploy Preview
+    runs-on: ubuntu-latest
+    needs: [ci, security-scan]
+    if: github.event_name == 'pull_request'
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Install Dependencies
+        run: npm ci
+
+      - name: Build Application
+        run: npm run build
+
+      - name: Upload Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: autoshield-preview
+          path: .output/public
+          retention-days: 1
+
+  notify:
+    name: Notification
+    runs-on: ubuntu-latest
+    needs: [ci, security-scan]
+    if: always()
+
+    steps:
+      - name: Send Slack Notification
+        uses: slackapi/slack-github-action@v1.25.0
+        with:
+          payload: |
+            {
+              "text": "🚀 CI/CD Pipeline Completed",
+              "blocks": [
+                {
+                  "type": "section",
+                  "text": {
+                    "type": "mrkdwn",
+                    "text": "*${{ github.workflow }}* - #${{ github.run_number }}\n*Status*: ${{ job.status }}\n<https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}|View details>"
+                  }
+                }
+              ]
+            }
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
