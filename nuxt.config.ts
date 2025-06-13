@@ -1,4 +1,4 @@
-// nuxt.config.ts - Configuração Corrigida para Resolver Erros de Prerender
+// nuxt.config.ts - Configuração Corrigida para Resolver Erros de Prerender e Configurar o Rollup para Nitro
 import { defineNuxtConfig } from 'nuxt/config'
 import tailwindcss from '@tailwindcss/vite'
 
@@ -51,12 +51,12 @@ export default defineNuxtConfig({
         },
         { name: 'theme-color', content: '#10b981' },
       ],
-    link: [
-      { rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' },
-      { rel: 'apple-touch-icon', sizes: '180x180', href: '/apple-touch-icon.png' },
-      { rel: 'icon', type: 'image/png', sizes: '32x32', href: '/favicon-32x32.png' },
-      { rel: 'icon', type: 'image/png', sizes: '16x16', href: '/favicon-16x16.png' }
-    ],
+      link: [
+        { rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' },
+        { rel: 'apple-touch-icon', sizes: '180x180', href: '/apple-touch-icon.png' },
+        { rel: 'icon', type: 'image/png', sizes: '32x32', href: '/favicon-32x32.png' },
+        { rel: 'icon', type: 'image/png', sizes: '16x16', href: '/favicon-16x16.png' }
+      ],
     },
   },
 
@@ -93,7 +93,6 @@ export default defineNuxtConfig({
       crawlLinks: false,
       // Não falhar no build por erros de prerender
       failOnError: false,
-      // Ignorar rotas inexistentes
     },
     experimental: {
       wasm: true,
@@ -103,11 +102,15 @@ export default defineNuxtConfig({
         target: 'es2022',
       },
     },
+    // Essa configuração informa ao Rollup para tratar "oxc-parser" como módulo externo,
+    // evitando que sua resolução de bindings nativos cause erros durante o build.
+    rollupConfig: {
+      external: ['oxc-parser']
+    }
   },
 
   // Regras de rota para controle fino
   routeRules: {
-    // Garantir que páginas principais sejam prerenderizadas
     '/': { prerender: true },
     '/privacy': { prerender: true },
     '/terms': { prerender: true },
