@@ -1,4 +1,4 @@
-// server/api/chat.post.ts - Correção do ESLint
+// server/api/chat.post.ts - Versão Final Corrigida
 import { HfInference } from '@huggingface/inference'
 
 interface ChatMessage {
@@ -31,9 +31,10 @@ export default defineEventHandler(async (event): Promise<ChatResponse> => {
   try {
     const body = await readBody<ChatRequest>(event)
 
-    // CORREÇÃO PRINCIPAL: Declaração com const para variáveis não reatribuídas
-    const { message, context = [] } = body
-    let sessionId = body.sessionId // Mantém let para variáveis reatribuídas
+    // CORREÇÃO: Separar declarações para variáveis que serão reatribuídas
+    const { message } = body
+    let context = body.context || []
+    let sessionId = body.sessionId
 
     if (!message?.trim()) {
       throw createError({
