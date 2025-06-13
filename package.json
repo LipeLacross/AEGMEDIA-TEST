@@ -59,6 +59,9 @@
     "node": "22.16.0",
     "npm": ">=8.0.0"
   },
+  "optionalDependencies": {
+  "@rollup/rollup-linux-x64-gnu": "4.43.0"
+  },
   "keywords": [
     "nuxt",
     "vue",
