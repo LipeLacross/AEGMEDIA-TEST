@@ -1,4 +1,4 @@
-// server/api/chat.post.ts - Versão COMPLETA com Funcionalidades de Marketing
+// server/api/chat.post.ts - Versão OTIMIZADA com Fluxo Simplificado
 import { HfInference } from '@huggingface/inference'
 
 // === INTERFACES E TIPOS ===
@@ -21,243 +21,312 @@ interface ChatResponse {
   debug?: string
 }
 
-// Interface expandida para dados do usuário
+// Interface para dados do usuário
 interface UserData {
   nome?: string
   veiculo?: string
   ano?: string
   valor?: number
-  tipo?: 'novo' | 'fidelidade' | 'indicacao'
   telefone?: string
-  email?: string
   cidade?: string
-  preocupacoes?: string[]
   confirmedData?: boolean
 }
 
-// Estados da conversa para fluxo de marketing
+// Estados simplificados da conversa
 enum ConversationState {
   INITIAL = 'initial',
   COLLECTING_DATA = 'collecting_data',
   CONFIRMING_DATA = 'confirming_data',
-  GENERATING_OFFER = 'generating_offer',
-  FINALIZING = 'finalizing'
+  ANSWERING_QUESTIONS = 'answering_questions',
+  GENERATING_OFFER = 'generating_offer'
 }
 
 interface ConversationContext {
   state: ConversationState
   userData: UserData
-  lastSentiment: string
+  questionsAnswered: Set<string>
   offerGenerated: boolean
 }
+function answerSpecificQuestion(message: string): string {
+  const lowerMessage = message.toLowerCase()
 
-// === CONFIGURAÇÕES ===
+  // Perguntas sobre número/telefone
+  if (lowerMessage.includes('numero') || lowerMessage.includes('número') ||
+      lowerMessage.includes('telefone') || lowerMessage.includes('contato')) {
+    return `📞 **Nossos Contatos AutoShield:**
+
+• **WhatsApp**: (74) 98125-6120
+• **Telefone**: (74) 98125-6120  
+• **Email**: contato@autoshield.com.br
+
+🕐 **Atendimento**: 24 horas por dia, 7 dias por semana
+
+Prefere falar pelo WhatsApp? É só clicar: https://wa.me/5574981256120`
+  }
+
+  // Perguntas sobre criação/fundação
+  if (lowerMessage.includes('criou') || lowerMessage.includes('fundou') ||
+      lowerMessage.includes('quem criou')) {
+    return `🏢 **Sobre a AutoShield:**
+
+A AutoShield é uma empresa brasileira fundada em 2023, especializada em proteção veicular com tecnologia de ponta.
+
+✨ **Nosso diferencial**: Somos pioneiros na integração de IA com rastreamento veicular no Brasil.
+
+🎯 **Missão**: Oferecer proteção veicular inteligente e acessível para todos os brasileiros.
+
+Quer saber mais sobre nossos serviços?`
+  }
+
+  return ''
+}
+function generateFallbackResponse(message: string): string {
+  return `🤔 Não encontrei informações específicas sobre "${message}".
+
+📞 **Para dúvidas não listadas, fale conosco:**
+• WhatsApp: (74) 98125-6120
+• Email: contato@autoshield.com.br
+
+💡 **Posso ajudar com:**
+• Planos e preços detalhados
+• Coberturas específicas
+• Processo de contratação
+• Informações sobre a empresa
+
+O que gostaria de saber?`
+}
+
+// === CONFIGURAÇÕES OTIMIZADAS ===
 const CONFIG = {
-  MAX_RETRIES: 3,
-  TIMEOUT_MS: 8000,
-  RETRY_DELAY_MS: 1500,
-  MAX_SESSIONS: 100,
-  SESSION_TTL_MS: 30 * 60 * 1000,
-  BACKOFF_MULTIPLIER: 2
+  MAX_RETRIES: 2,
+  TIMEOUT_MS: 6000,
+  RETRY_DELAY_MS: 1000,
+  MAX_SESSIONS: 50,
+  MAX_CONTEXT_MESSAGES: 15, // Otimizado para 15 mensagens
+  SESSION_TTL_MS: 20 * 60 * 1000 // 20 minutos
 } as const
 
 const STABLE_MODELS = [
   'google/gemma-2-2b-it',
   'meta-llama/Meta-Llama-3-8B-Instruct',
-  'mistralai/Mistral-7B-Instruct-v0.2',
-  'tiiuae/falcon-7b',
-  'meta-llama/Llama-2-7B-chat-hf'
+  'mistralai/Mistral-7B-Instruct-v0.2'
 ] as const
 
-type ValidModel = typeof STABLE_MODELS[number]
+// === BANCO DE CONHECIMENTO DA EMPRESA ===
+const COMPANY_KNOWLEDGE = {
+  contato: {
+    telefone: "(74) 98125-6120",
+    whatsapp: "(74) 98125-6120",
+    email: "contato@autoshield.com.br",
+    site: "www.autoshield.com.br",
+    endereco: "São Paulo, SP - Brasil"
+  },
 
-// === FUNCIONALIDADES DE MARKETING ===
+  empresa: {
+    nome: "AutoShield",
+    fundacao: "2023",
+    criador: "Empresa brasileira especializada em proteção veicular",
+    missao: "Oferecer proteção veicular inteligente com tecnologia de ponta",
+    diferencial: "Primeira empresa a integrar IA no rastreamento veicular no Brasil"
+  },
 
-// 1. Geração de Ofertas Personalizadas
-function generateDynamicOffer(userData: UserData): string {
-  const discounts = {
-    novo: '15% OFF na primeira parcela',
-    fidelidade: 'Seguro grátis no 13º mês',
-    indicacao: 'R$100 de crédito por indicação'
+  planos: {
+    essencial: {
+      preco: "R$ 89/mês",
+      descricao: "Cobertura roubo/furto, GPS grátis, assistência 24h, guincho até 200km, cobertura vidros",
+      ideal_para: "Veículos até R$ 50.000"
+    },
+    completo: {
+      preco: "R$ 149/mês",
+      descricao: "Tudo do Essencial + colisão, incêndio, terceiros R$ 50k, carro reserva 15 dias",
+      ideal_para: "Veículos até R$ 100.000"
+    },
+    premium: {
+      preco: "R$ 229/mês",
+      descricao: "Tudo do Completo + fenômenos naturais, terceiros R$ 100k, carro reserva premium 30 dias",
+      ideal_para: "Veículos até R$ 200.000"
+    }
+  },
+
+  cobertura: {
+    basica: "Roubo, furto, assistência 24h, guincho, chaveiro, vidros",
+    completa: "Colisão, incêndio, fenômenos naturais, terceiros",
+    diferencial: "Rastreamento GPS com IA gratuito em todos os planos"
+  },
+
+  tecnologia: {
+    gps_ia: "Sistema de rastreamento com inteligência artificial integrada",
+    app: "Aplicativo exclusivo para clientes com monitoramento em tempo real",
+    assistencia: "Central 24h com atendimento automatizado por IA"
+  }
+}
+
+// === FUNÇÕES DE ANÁLISE E RESPOSTA ===
+
+// Detecta se é pergunta sobre a empresa
+function isCompanyQuestion(message: string): boolean {
+  const questionKeywords = ['como', 'que', 'qual', 'quando', 'onde', 'por que', 'quanto', '?']
+  const companyKeywords = ['autoshield', 'empresa', 'plano', 'preço', 'cobertura', 'assistência', 'guincho']
+
+  const hasQuestion = questionKeywords.some(word => message.toLowerCase().includes(word))
+  const hasCompanyTopic = companyKeywords.some(word => message.toLowerCase().includes(word))
+
+  return hasQuestion && hasCompanyTopic
+}
+
+// Responde perguntas sobre a empresa
+function answerCompanyQuestion(message: string): string {
+  const lowerMessage = message.toLowerCase()
+
+  if (lowerMessage.includes('preço') || lowerMessage.includes('valor') || lowerMessage.includes('quanto custa')) {
+    return `💰 **Nossos Planos AutoShield:**
+
+• **Essencial**: R$ 89/mês - Proteção completa básica
+• **Completo**: R$ 149/mês - Proteção total + benefícios
+• **Premium**: R$ 229/mês - Máxima proteção VIP
+
+🎁 **Todos incluem GPS com IA GRÁTIS!**
+
+Qual plano te interessa mais?`
   }
 
-  const baseOffer = discounts[userData.tipo || 'novo']
-  const additionalBenefit = userData.valor && userData.valor > 100000
-    ? 'Carro reserva premium'
-    : 'GPS Grátis'
+  if (lowerMessage.includes('cobertura') || lowerMessage.includes('cobre') || lowerMessage.includes('protege')) {
+    return `🛡️ **Nossa Cobertura Completa:**
 
-  return `🔥 OFERTA EXCLUSIVA: ${baseOffer} + ${additionalBenefit}`
-}
+✅ Roubo e Furto total
+✅ Colisão e Incêndio  
+✅ Assistência 24h em todo Brasil
+✅ Guincho ilimitado
+✅ Rastreamento GPS com IA
+✅ Cobertura de terceiros
+✅ Chaveiro e vidros
 
-// 2. Análise de Sentimentos
-async function analyzeSentiment(text: string): Promise<string> {
-  try {
-    const response = await hf.textClassification({
-      model: 'cardiffnlp/twitter-xlm-roberta-base-sentiment',
-      inputs: text
-    })
-    return response[0]?.label || 'NEUTRAL'
-  } catch (error) {
-    console.error('Erro na análise de sentimentos:', error)
-    return 'NEUTRAL'
+Quer saber mais sobre alguma cobertura específica?`
   }
+
+  if (lowerMessage.includes('assistência') || lowerMessage.includes('guincho') || lowerMessage.includes('24h')) {
+    return `🚗 **Assistência 24h AutoShield:**
+
+• Guincho ilimitado em todo Brasil
+• Chaveiro emergencial
+• Pane seca e elétrica
+• Mecânico no local
+• Assistência médica
+• Carro reserva (planos Completo/Premium)
+
+**SEM CARÊNCIA** para assistência! Disponível imediatamente após aprovação.
+
+Precisa de mais alguma informação?`
+  }
+
+  if (lowerMessage.includes('diferencial') || lowerMessage.includes('vantagem') || lowerMessage.includes('melhor')) {
+    return `🌟 **Nossos Diferenciais Únicos:**
+
+🔥 GPS com IA **GRATUITO** (valor R$ 50/mês)
+⚡ Sem carência para guincho e assistência
+💰 Preços transparentes, sem taxas ocultas
+🚀 Atendimento com IA 24h no app
+📱 Cancelamento livre, sem multas
+🏆 4.8⭐ de avaliação no Google
+
+Qual diferencial mais te chama atenção?`
+  }
+
+  // Resposta genérica para outras perguntas
+  return `📋 **Sobre a AutoShield:**
+
+Somos especialistas em proteção veicular com tecnologia de ponta. Oferecemos 3 planos (R$ 89, R$ 149, R$ 229) com cobertura completa e assistência 24h.
+
+**Principais dúvidas:**
+• Preços e planos
+• Coberturas incluídas  
+• Assistência 24h
+• Nossos diferenciais
+
+Sobre o que gostaria de saber mais?`
 }
 
-// 3. Validação de Dados Completos
-function hasAllUserData(userData: UserData): boolean {
-  return !!(userData.nome && userData.veiculo && userData.ano && userData.valor && userData.telefone)
-}
-
-// 4. Atualização de Dados do Usuário
-function updateUserData(currentData: UserData, message: string): UserData {
+// Extração otimizada de dados
+function extractUserData(currentData: UserData, message: string): UserData {
   const updatedData = { ...currentData }
 
-  // Extração de dados da mensagem
-  if (message.toLowerCase().includes('meu nome é') || message.toLowerCase().includes('me chamo')) {
-    const nomeMatch = message.match(/(?:meu nome é|me chamo)\s+([a-záàâãéèêíïóôõöúçñ\s]+)/i)
-    if (nomeMatch && nomeMatch[1]) updatedData.nome = nomeMatch[1].trim()
+  // Nome
+  const nomePatterns = [
+    /(?:meu nome é|me chamo|sou o|sou a)\s+([a-záàâãéèêíïóôõöúçñ\s]+)/i,
+    /^([a-záàâãéèêíïóôõöúçñ]{3,})\s*$/i
+  ]
+
+  for (const pattern of nomePatterns) {
+    const match = message.match(pattern)
+    if (match && match[1] && !updatedData.nome) {
+      updatedData.nome = match[1].trim()
+      break
+    }
   }
 
-  if (message.toLowerCase().includes('meu carro é') || message.toLowerCase().includes('tenho um')) {
-    const veiculoMatch = message.match(/(?:meu carro é|tenho um)\s+([a-záàâãéèêíïóôõöúçñ\s\d]+)/i)
-    if (veiculoMatch && veiculoMatch[1]) updatedData.veiculo = veiculoMatch[1].trim()
+  // Veículo
+  const veiculoPatterns = [
+    /(?:tenho um|meu carro é|dirigir um)\s+([a-záàâãéèêíïóôõöúçñ\s\d]+)/i,
+    /(civic|corolla|onix|hb20|gol|uno|palio|fiesta|ka|celta|prisma)/i
+  ]
+
+  for (const pattern of veiculoPatterns) {
+    const match = message.match(pattern)
+    if (match && match[1] && !updatedData.veiculo) {
+      updatedData.veiculo = match[1].trim()
+      break
+    }
   }
 
-  // Extração de telefone
+  // Telefone
   const telefoneMatch = message.match(/(\(?[1-9]{2}\)?\s?9?\d{4}-?\d{4})/g)
-  if (telefoneMatch && telefoneMatch[0]) updatedData.telefone = telefoneMatch[0]
+  if (telefoneMatch && !updatedData.telefone) {
+    updatedData.telefone = telefoneMatch[0]
+  }
 
-  // Extração de ano
-  const anoMatch = message.match(/(20\d{2}|\d{4})/g)
-  if (anoMatch && anoMatch[0]) {
+  // Ano
+  const anoMatch = message.match(/(20\d{2}|19\d{2})/g)
+  if (anoMatch && !updatedData.ano) {
     const ano = parseInt(anoMatch[0])
-    if (ano >= 1990 && ano <= 2025) updatedData.ano = ano.toString()
+    if (ano >= 1990 && ano <= 2025) {
+      updatedData.ano = ano.toString()
+    }
   }
 
-  // Extração de valor
-  const valorMatch = message.match(/(?:vale|valor|custa|custou|paguei).*?(\d+\.?\d*)/i)
-  if (valorMatch && valorMatch[1]) {
-    updatedData.valor = parseInt(valorMatch[1].replace(/\./g, ''))
+  // Valor simplificado
+  const valorMatch = message.match(/(\d+\.?\d*)\s*(?:mil|k)/i)
+  if (valorMatch && valorMatch[1] && !updatedData.valor) {
+    updatedData.valor = parseInt(valorMatch[1]) * 1000
   }
+
 
   return updatedData
 }
 
-// 5. Mensagem de Confirmação
-function generateConfirmationMessage(userData: UserData): string {
-  return `Por favor, confirme se as informações abaixo estão corretas:
-
-📝 Seus Dados:
-• Nome: ${userData.nome}
-• Veículo: ${userData.veiculo} (${userData.ano})
-• Valor: R$ ${userData.valor?.toLocaleString()}
-• Telefone: ${userData.telefone}
-• Cidade: ${userData.cidade || 'Não informada'}
-
-Responda "SIM" para confirmar ou "NÃO" para corrigir.`
+// Verifica se tem dados suficientes (simplificado)
+function hasSufficientData(userData: UserData): boolean {
+  return !!(userData.nome && userData.veiculo && userData.telefone)
 }
 
-// 6. Geração de Link do WhatsApp
+// Gera link do WhatsApp otimizado
 function generateWhatsAppLink(userData: UserData): string {
-  const offer = generateDynamicOffer(userData)
-  const whatsappText = `Olá! Sou ${userData.nome}. Gostaria de contratar o plano AutoShield para meu veículo ${userData.veiculo} (${userData.ano}), valor R$ ${userData.valor?.toLocaleString()}. ${offer}`
+  const baseMessage = `Olá! Sou ${userData.nome}. Tenho interesse na proteção AutoShield para meu ${userData.veiculo}${userData.ano ? ` (${userData.ano})` : ''}. Gostaria de uma proposta personalizada.`
 
-  return `https://wa.me/5574981256120?text=${encodeURIComponent(whatsappText)}`
+  return `https://wa.me/5574981256120?text=${encodeURIComponent(baseMessage)}`
 }
 
-// === FUNÇÕES AUXILIARES ===
-const validateToken = (token: string | undefined): boolean => {
-  return token !== undefined && token.startsWith('hf_') && token.length > 20
-}
-
-const delay = (ms: number): Promise<void> => {
-  return new Promise(resolve => setTimeout(resolve, ms))
-}
-
-// Fallback inteligente
-const getIntelligentFallback = (message: string, errorType?: string): string => {
-  const lowerMessage = message.toLowerCase()
-
-  if (lowerMessage.includes('preço') || lowerMessage.includes('custo') || lowerMessage.includes('valor')) {
-    return `💰 Planos AutoShield:
-
-• Essencial: R$ 89/mês - Cobertura básica completa
-• Completo: R$ 149/mês - Proteção total + benefícios extras  
-• Premium: R$ 229/mês - Máxima proteção + serviços VIP
-
-📱 Fale conosco: (74) 98125-6120`
-  }
-
-  return `👋 Olá! Sou o assistente da AutoShield.
-
-🚗 Como posso ajudar:
-• Informações sobre planos e preços
-• Detalhes de cobertura
-• Contratação e atendimento
-• Dúvidas sobre proteção veicular
-
-📱 Contato direto: (74) 98125-6120`
-}
-
-// Modelos estáveis
-const tryWithStableModels = async (messages: ChatMessage[]): Promise<string> => {
-  for (const model of STABLE_MODELS) {
-    try {
-      console.log(`🤖 Testando modelo: ${model}`)
-
-      const response = await Promise.race([
-        hf.chatCompletion({
-          model,
-          messages: messages.map(msg => ({
-            role: msg.role as 'user' | 'assistant' | 'system',
-            content: msg.content
-          })),
-          max_tokens: 200,
-          temperature: 0.7,
-          top_p: 0.9
-        }),
-        new Promise<never>((_, reject) =>
-          setTimeout(() => reject(new Error('TIMEOUT')), CONFIG.TIMEOUT_MS)
-        )
-      ])
-
-      if (response?.choices?.[0]?.message?.content) {
-        console.log(`✅ Sucesso com modelo: ${model}`)
-        return response.choices[0].message.content.trim()
-      }
-    } catch (error: unknown) {
-      const errorMessage = error instanceof Error ? error.message : 'Erro desconhecido'
-      console.error(`❌ Modelo ${model} falhou:`, errorMessage)
-      continue
-    }
-  }
-
-  return ''
-}
-
-// Limpeza de sessões
-const cleanupSessions = (conversationMemory: Map<string, ConversationContext>): void => {
-  if (conversationMemory.size > CONFIG.MAX_SESSIONS) {
-    const keys = Array.from(conversationMemory.keys())
-    const keysToDelete = keys.slice(0, Math.floor(CONFIG.MAX_SESSIONS * 0.2))
-    keysToDelete.forEach(key => conversationMemory.delete(key))
-  }
-}
-
-// === IMPLEMENTAÇÃO PRINCIPAL ===
+// === IMPLEMENTAÇÃO PRINCIPAL OTIMIZADA ===
 const hf = new HfInference(process.env.HUGGINGFACE_TOKEN)
 const conversationMemory = new Map<string, ConversationContext>()
 
 export default defineEventHandler(async (event): Promise<ChatResponse> => {
-  const startTime = Date.now()
-
   try {
     const body = await readBody<ChatRequest>(event)
     const { message } = body
     let context = body.context || []
     let sessionId = body.sessionId || Math.random().toString(36).substring(2, 15)
 
-    // Validação de entrada
+    // Validação
     if (!message?.trim()) {
       throw createError({
         statusCode: 400,
@@ -265,10 +334,7 @@ export default defineEventHandler(async (event): Promise<ChatResponse> => {
       })
     }
 
-    // Limpeza periódica
-    cleanupSessions(conversationMemory)
-
-    // Recuperação ou criação de contexto
+    // Recuperar ou criar contexto
     let conversationContext: ConversationContext
     if (conversationMemory.has(sessionId)) {
       conversationContext = conversationMemory.get(sessionId)!
@@ -276,182 +342,164 @@ export default defineEventHandler(async (event): Promise<ChatResponse> => {
       conversationContext = {
         state: ConversationState.INITIAL,
         userData: {},
-        lastSentiment: 'NEUTRAL',
+        questionsAnswered: new Set(),
         offerGenerated: false
       }
     }
 
-    // Análise de sentimentos em cada mensagem
-    const sentiment = await analyzeSentiment(message)
-    conversationContext.lastSentiment = sentiment
+    let reply = ''
 
-    // Atualizar dados do usuário
-    conversationContext.userData = updateUserData(conversationContext.userData, message)
+    // === FLUXO OTIMIZADO DE CONVERSA ===
 
-    // Validação do token
-    const token = process.env.HUGGINGFACE_TOKEN
-    if (!validateToken(token)) {
-      const fallbackReply = getIntelligentFallback(message)
+    // 1. PRIMEIRA PRIORIDADE: Responder dúvidas sobre a empresa
+    if (isCompanyQuestion(message)) {
+      conversationContext.state = ConversationState.ANSWERING_QUESTIONS
+      reply = answerCompanyQuestion(message)
 
-      const newContext: ChatMessage[] = [
-        ...context.slice(-15),
-        { role: 'user' as const, content: message },
-        { role: 'assistant' as const, content: fallbackReply }
-      ]
+      // Após responder, sugere avançar se já tiver alguns dados
+      if (Object.keys(conversationContext.userData).length > 0) {
+        reply += `\n\n💬 Já que você tem interesse, que tal finalizarmos sua proposta rapidinho?`
+      }
+    }
+    // 2. FLUXO DE QUALIFICAÇÃO SIMPLIFICADO
+    else {
+      switch (conversationContext.state) {
+        case ConversationState.INITIAL:
+        case ConversationState.ANSWERING_QUESTIONS:
+          // Extrair dados da mensagem atual
+          conversationContext.userData = extractUserData(conversationContext.userData, message)
 
-      return {
-        reply: fallbackReply,
-        timestamp: new Date().toISOString(),
-        context: newContext,
-        debug: 'Usando fallback - Token inválido'
+          if (hasSufficientData(conversationContext.userData)) {
+            // Dados suficientes - pular para confirmação
+            conversationContext.state = ConversationState.CONFIRMING_DATA
+            reply = `✅ Perfeito! Vou confirmar seus dados:
+
+📝 **Seus Dados:**
+• Nome: ${conversationContext.userData.nome}
+• Veículo: ${conversationContext.userData.veiculo}${conversationContext.userData.ano ? ` (${conversationContext.userData.ano})` : ''}
+• WhatsApp: ${conversationContext.userData.telefone}
+
+Está tudo correto? Digite **SIM** para continuar ou **NÃO** para corrigir.`
+          } else {
+            // Coletar dados que faltam de forma inteligente
+            conversationContext.state = ConversationState.COLLECTING_DATA
+            const missingData = []
+
+            if (!conversationContext.userData.nome) missingData.push('seu nome')
+            if (!conversationContext.userData.veiculo) missingData.push('seu veículo (marca/modelo)')
+            if (!conversationContext.userData.telefone) missingData.push('seu WhatsApp')
+
+            if (missingData.length === 3) {
+              reply = `👋 Olá! Sou o consultor AutoShield. Para criar sua proposta personalizada, preciso apenas de:
+
+📋 **Me conte rapidinho:**
+• Seu nome
+• Que carro você tem
+• Seu WhatsApp
+
+Pode mandar tudo numa mensagem só! 😉`
+            } else {
+              reply = `📋 Quase pronto! Só preciso de mais: **${missingData.join(' e ')}**.
+
+Pode me informar?`
+            }
+          }
+          break
+
+        case ConversationState.COLLECTING_DATA:
+          // Continuar coletando dados
+          conversationContext.userData = extractUserData(conversationContext.userData, message)
+
+          if (hasSufficientData(conversationContext.userData)) {
+            conversationContext.state = ConversationState.CONFIRMING_DATA
+            reply = `✅ Ótimo! Confirmando seus dados:
+
+📝 **Seus Dados:**
+• Nome: ${conversationContext.userData.nome}
+• Veículo: ${conversationContext.userData.veiculo}${conversationContext.userData.ano ? ` (${conversationContext.userData.ano})` : ''}
+• WhatsApp: ${conversationContext.userData.telefone}
+
+Está correto? **SIM** ou **NÃO**?`
+          } else {
+            const missingData = []
+            if (!conversationContext.userData.nome) missingData.push('nome')
+            if (!conversationContext.userData.veiculo) missingData.push('veículo')
+            if (!conversationContext.userData.telefone) missingData.push('WhatsApp')
+
+            reply = `📋 Ainda preciso de: **${missingData.join(', ')}**. Pode completar para mim?`
+          }
+          break
+
+        case ConversationState.CONFIRMING_DATA:
+          if (message.toLowerCase().includes('sim')) {
+            conversationContext.state = ConversationState.GENERATING_OFFER
+            const whatsappLink = generateWhatsAppLink(conversationContext.userData)
+
+            reply = `🎉 **Proposta AutoShield para ${conversationContext.userData.nome}!**
+
+🔥 **OFERTA ESPECIAL:**
+• 15% OFF na primeira parcela
+• GPS com IA GRATUITO (valor R$ 50/mês)
+• Sem carência para assistência
+• Cobertura imediata
+
+💰 **Planos disponíveis:**
+• Essencial: R$ 89/mês
+• Completo: R$ 149/mês  
+• Premium: R$ 229/mês
+
+📱 **Finalize agora pelo WhatsApp:**
+${whatsappLink}
+
+Nossa equipe especializada vai atender você em segundos! 🚀`
+
+            conversationContext.offerGenerated = true
+          } else if (message.toLowerCase().includes('não')) {
+            conversationContext.state = ConversationState.COLLECTING_DATA
+            reply = `✏️ Sem problema! O que precisa corrigir?
+
+• **Nome**: ${conversationContext.userData.nome || 'não informado'}
+• **Veículo**: ${conversationContext.userData.veiculo || 'não informado'}  
+• **WhatsApp**: ${conversationContext.userData.telefone || 'não informado'}
+
+Me diga o que está errado.`
+          } else {
+            reply = `🤔 Por favor, responda **SIM** para confirmar ou **NÃO** para corrigir os dados.`
+          }
+          break
+
+        case ConversationState.GENERATING_OFFER:
+          reply = `✅ Sua proposta já foi gerada!
+
+📱 **Link direto do WhatsApp:**
+${generateWhatsAppLink(conversationContext.userData)}
+
+Tem alguma dúvida sobre nossos planos ou coberturas?`
+          break
       }
     }
 
-    // Prompt do sistema para vendas
-    const systemPrompt = `Você é o Vendedor Sênior da AutoShield com 15 anos de experiência em proteção veicular.
+    // Garantir que sempre há uma resposta
+    if (!reply) {
+      reply = `👋 Olá! Sou o assistente AutoShield. Como posso ajudar?
 
-OBJETIVO PRINCIPAL: Coletar dados do cliente, gerar ofertas personalizadas e direcionar para WhatsApp.
+🤔 **Posso esclarecer sobre:**
+• Planos e preços
+• Coberturas e assistência
+• Fazer sua cotação
 
-DADOS A COLETAR:
-- Nome completo
-- Veículo (marca, modelo, ano)
-- Valor aproximado do veículo
-- Telefone/WhatsApp
-- Cidade
-- Tipo de cliente (novo, fidelidade, indicação)
-
-TÉCNICAS DE VENDAS:
-1. Fazer perguntas diretas e objetivas
-2. Personalizar ofertas baseadas no perfil
-3. Criar urgência com ofertas limitadas
-4. Tratar objeções com empatia
-5. Sempre direcionar para confirmação no WhatsApp
-
-OFERTAS DISPONÍVEIS:
-- Novos clientes: 15% OFF primeira parcela + GPS grátis
-- Fidelidade: Seguro grátis no 13º mês + carro reserva
-- Indicação: R$100 crédito + benefícios extras
-
-FLUXO DE VENDAS:
-1. Saudar e identificar necessidade
-2. Coletar dados essenciais
-3. Confirmar informações
-4. Apresentar oferta personalizada
-5. Gerar link WhatsApp para finalização
-
-Sempre mantenha tom profissional, consultivo e focado em resultados.`
-
-    let reply = ''
-
-    // === LÓGICA DE ESTADOS DA CONVERSA ===
-    switch (conversationContext.state) {
-      case ConversationState.INITIAL:
-        reply = `👋 Olá! Sou o consultor especializado da AutoShield.
-
-Para criar a melhor proposta para você, preciso de algumas informações:
-
-📝 Vamos começar:
-• Qual seu nome?
-• Que veículo você tem (marca/modelo/ano)?
-• Qual o valor aproximado?
-• Seu WhatsApp para contato?
-
-Me conte sobre seu veículo e eu criarei uma oferta exclusiva!`
-
-        conversationContext.state = ConversationState.COLLECTING_DATA
-        break
-
-      case ConversationState.COLLECTING_DATA:
-        if (hasAllUserData(conversationContext.userData)) {
-          conversationContext.state = ConversationState.CONFIRMING_DATA
-          reply = generateConfirmationMessage(conversationContext.userData)
-        } else {
-          // Preparar mensagens para IA
-          const messages: ChatMessage[] = [
-            { role: 'system' as const, content: systemPrompt },
-            ...context.slice(-15),
-            { role: 'user' as const, content: `[COLETANDO DADOS] ${message}` }
-          ]
-
-          // Tentar com modelos IA
-          for (let attempt = 1; attempt <= CONFIG.MAX_RETRIES; attempt++) {
-            try {
-              reply = await tryWithStableModels(messages)
-              if (reply && reply.length > 10) break
-            } catch (error) {
-              if (attempt === CONFIG.MAX_RETRIES) {
-                reply = getIntelligentFallback(message)
-              } else {
-                await delay(CONFIG.RETRY_DELAY_MS * Math.pow(CONFIG.BACKOFF_MULTIPLIER, attempt - 1))
-              }
-            }
-          }
-
-          if (!reply) reply = getIntelligentFallback(message)
-        }
-        break
-
-      case ConversationState.CONFIRMING_DATA:
-        if (message.toLowerCase().includes('sim') || message.includes('SIM')) {
-          conversationContext.state = ConversationState.GENERATING_OFFER
-          const offer = generateDynamicOffer(conversationContext.userData)
-          const whatsappLink = generateWhatsAppLink(conversationContext.userData)
-
-          reply = `🎉 Perfeito! Aqui está sua oferta personalizada:
-
-${offer}
-
-📱 Finalize agora pelo WhatsApp:
-${whatsappLink}
-
-Nossa equipe especializada está pronta para atender você!`
-
-          conversationContext.offerGenerated = true
-        } else if (message.toLowerCase().includes('não') || message.includes('NÃO')) {
-          conversationContext.state = ConversationState.COLLECTING_DATA
-          reply = `Sem problemas! Vamos corrigir as informações.
-
-Qual dado você gostaria de alterar?
-• Nome
-• Veículo 
-• Telefone
-• Outro
-
-Me diga o que precisa ser corrigido.`
-        } else {
-          reply = `Por favor, responda com "SIM" para confirmar ou "NÃO" para corrigir os dados.`
-        }
-        break
-
-      case ConversationState.GENERATING_OFFER:
-        reply = `Sua oferta já foi gerada! 
-
-${generateDynamicOffer(conversationContext.userData)}
-
-📱 Link WhatsApp:
-${generateWhatsAppLink(conversationContext.userData)}
-
-Precisa de mais alguma informação?`
-        break
+O que gostaria de saber?`
     }
 
-    // Tratamento de sentimentos negativos
-    if (sentiment === 'NEGATIVE') {
-      reply += '\n\n😔 Percebi que você pode estar preocupado. Que tal um desconto especial de 20% para resolver suas dúvidas? Nossa equipe está aqui para ajudar!'
-    }
-
-    // Atualizar contexto
+    // Atualizar contexto com limite otimizado
     const newContext: ChatMessage[] = [
-      ...context.slice(-15),
+      ...context.slice(-(CONFIG.MAX_CONTEXT_MESSAGES - 2)), // Manter espaço para as novas mensagens
       { role: 'user' as const, content: message },
       { role: 'assistant' as const, content: reply }
     ]
 
     // Salvar contexto da conversa
     conversationMemory.set(sessionId, conversationContext)
-
-    const processingTime = Date.now() - startTime
-    console.log(`✅ Processamento concluído em ${processingTime}ms`)
 
     return {
       reply: reply,
@@ -460,14 +508,14 @@ Precisa de mais alguma informação?`
     }
 
   } catch (error: unknown) {
-    console.error('❌ Erro crítico na API:', error)
+    console.error('❌ Erro na API:', error)
     return {
-      reply: `🚨 Sistema Temporariamente Indisponível
+      reply: `🚨 Sistema temporariamente indisponível.
 
-📞 Contato Imediato:
+📞 **Contato direto:**
 WhatsApp: (74) 98125-6120
 
-Nossa equipe está disponível para ajudar!`,
+Nossa equipe está pronta para atender você!`,
       context: [],
       error: true,
       timestamp: new Date().toISOString()
