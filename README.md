@@ -21,7 +21,7 @@ Landing page moderna para empresa de proteção veicular, desenvolvida com Nuxt.
 - **Chatbot Flutuante**: Chatbot com IA responsiva e memória persistente.
 - **Newsletter e Links Importantes**: Footer com newsletter e links para políticas e termos.
 
-### Exemplo Visual do Projeto	
+### Exemplo Visual do Projeto
 
 - https://youtu.be/gik2RjL4u84
 

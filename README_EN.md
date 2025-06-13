@@ -24,7 +24,7 @@ Modern landing page for a vehicle protection company, developed with Nuxt.js, Vu
 ### Visual Project Example	
 
 - https://youtu.be/gik2RjL4u84
-- 
+
 ## Techniques and Technologies Used
 
 - **Nuxt.js**: Vue.js framework with SSR, automatic optimizations, and hybrid rendering.
