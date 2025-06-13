@@ -1,171 +1,244 @@
-<!-- components/base/Footer.vue -->
+<!-- components/base/Footer.vue - Versão Final Corrigida -->
 <template>
-  <footer class="max-w-screen-xl px-8 mx-auto bg-gray-50">
-    <div class="w-full border-t border-gray-200">
-      <div class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-0">
-        <!-- Seção Logo -->
-        <div class="p-6 lg:p-12 border-b md:border-b-0 md:border-r border-gray-200">
-          <NuxtLink to="/" class="block mb-6">
-            <NuxtImg
-              src="/img/logo/autoshield.svg"
-              width="120"
-              height="40"
-              alt="AutoShield Logo"
-              class="h-10"
-            />
-          </NuxtLink>
-          <p class="text-sm text-gray-600 mt-4">
-            Proteção veicular completa e personalizada com tecnologia de ponta
-          </p>
+  <footer class="relative bg-gradient-to-br from-white via-primary-50 to-blue-50 py-10 lg:py-14 overflow-hidden">
+    <!-- Fundo animado sutil -->
+    <div class="absolute inset-0 pointer-events-none overflow-hidden">
+      <div class="absolute -top-10 -left-10 w-24 h-24 bg-gradient-to-r from-primary-200 to-emerald-200 rounded-full blur-2xl opacity-20 animate-float"></div>
+      <div class="absolute -bottom-10 -right-10 w-20 h-20 bg-gradient-to-r from-blue-200 to-primary-200 rounded-full blur-2xl opacity-10 animate-float animation-delay-2000"></div>
+    </div>
+
+    <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+
+        <!-- Logo e Descrição Centralizada -->
+        <div class="text-center md:text-left">
+  <!-- Container do Logo Ampliado -->
+    <div class="mb-2 flex justify-center">
+    <div class="bg-white rounded-sm p-4 shadow-lg hover:shadow-md transition-shadow duration-300">
+      <NuxtLink to="/" class="block">
+        <img
+          src="/img/autoshield.png"
+          width="160"
+          height="160"
+          alt="AutoShield Logo"
+          class="h-22 w-auto mx-auto"
+          loading="lazy"
+        />
+      </NuxtLink>
+    </div>
+  </div>
+
+  <!-- Texto Descritivo -->
+  <p class="text-gray-600 mb-6 text-base leading-relaxed max-w-xl mx-auto">
+    Proteção veicular inteligente com IA, rastreamento GPS avançado e assistência 24h em todo Brasil.<br>
+    Tecnologia de ponta para sua tranquilidade.
+  </p>
           <!-- Redes Sociais -->
-          <div class="flex space-x-4 mt-4">
-            <a href="#" class="text-gray-400 hover:text-primary-500 transition-colors">
-              <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
-                <path d="M24 4.557c-.883.392-1.832.656-2.828.775 1.017-.609 1.798-1.574 2.165-2.724-.951.564-2.005.974-3.127 1.195-.897-.957-2.178-1.555-3.594-1.555-3.179 0-5.515 2.966-4.797 6.045-4.091-.205-7.719-2.165-10.148-5.144-1.29 2.213-.669 5.108 1.523 6.574-.806-.026-1.566-.247-2.229-.616-.054 2.281 1.581 4.415 3.949 4.89-.693.188-1.452.232-2.224.084.626 1.956 2.444 3.379 4.6 3.419-2.07 1.623-4.678 2.348-7.29 2.04 2.179 1.397 4.768 2.212 7.548 2.212 9.142 0 14.307-7.721 13.995-14.646.962-.695 1.797-1.562 2.457-2.549z"/>
+          <div class="flex justify-center md:justify-start space-x-4">
+            <a href="#" aria-label="Instagram" class="group bg-white rounded-full p-3 shadow-md hover:shadow-lg transition-all duration-300 hover:scale-110">
+              <svg class="w-5 h-5 text-gray-400 group-hover:text-primary-500 transition-colors" fill="currentColor" viewBox="0 0 24 24">
+                <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/>
               </svg>
             </a>
-            <a href="#" class="text-gray-400 hover:text-primary-500 transition-colors">
-              <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
-                <path d="M22.46 6c-.77.35-1.6.58-2.46.69.88-.53 1.56-1.37 1.88-2.38-.83.5-1.75.85-2.72 1.05C18.37 4.5 17.26 4 16 4c-2.35 0-4.27 1.92-4.27 4.29 0 .34.04.67.11.98C8.28 9.09 5.11 7.38 3 4.79c-.37.63-.58 1.37-.58 2.15 0 1.49.75 2.81 1.91 3.56-.71 0-1.37-.2-1.95-.5v.03c0 2.08 1.48 3.82 3.44 4.21a4.22 4.22 0 0 1-1.93.07 4.28 4.28 0 0 0 4 2.98 8.521 8.521 0 0 1-5.33 1.84c-.34 0-.68-.02-1.02-.06C3.44 20.29 5.7 21 8.12 21 16 21 20.33 14.46 20.33 8.79c0-.19 0-.37-.01-.56.84-.6 1.56-1.36 2.14-2.23z"/>
-              </svg>
-            </a>
-            <a href="#" class="text-gray-400 hover:text-primary-500 transition-colors">
-              <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
-                <path d="M12.017 0C5.396 0 .029 5.367.029 11.987c0 5.079 3.158 9.417 7.618 11.174-.105-.949-.199-2.403.041-3.439.219-.937 1.406-5.957 1.406-5.957s-.359-.72-.359-1.781c0-1.663.967-2.911 2.168-2.911 1.024 0 1.518.769 1.518 1.688 0 1.029-.653 2.567-.992 3.992-.285 1.193.6 2.165 1.775 2.165 2.128 0 3.768-2.245 3.768-5.487 0-2.861-2.063-4.869-5.008-4.869-3.41 0-5.409 2.562-5.409 5.199 0 1.033.394 2.143.889 2.741.099.12.112.225.085.345-.09.375-.293 1.199-.334 1.363-.053.225-.172.271-.402.163-1.495-.69-2.433-2.878-2.433-4.646 0-3.776 2.748-7.252 7.92-7.252 4.158 0 7.392 2.967 7.392 6.923 0 4.135-2.607 7.462-6.233 7.462-1.214 0-2.357-.629-2.748-1.378l-.748 2.853c-.271 1.043-1.002 2.35-1.492 3.146C9.57 23.812 10.763 24.009 12.017 24.009c6.624 0 11.99-5.367 11.99-11.988C24.007 5.367 18.641.001.012.001z"/>
+            <a href="#" aria-label="Facebook" class="group bg-white rounded-full p-3 shadow-md hover:shadow-lg transition-all duration-300 hover:scale-110">
+              <svg class="w-5 h-5 text-gray-400 group-hover:text-primary-500 transition-colors" fill="currentColor" viewBox="0 0 24 24">
+                <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
               </svg>
             </a>
           </div>
         </div>
 
-        <!-- Links Rápidos -->
-        <div class="p-6 lg:p-12 border-b md:border-b-0 lg:border-r border-gray-200">
-          <h3 class="text-sm font-semibold text-gray-800 mb-4">Nossos Serviços</h3>
-          <ul class="space-y-3">
-            <li><a href="#" class="text-gray-600 hover:text-primary-500 transition-colors">Planos Empresariais</a></li>
-            <li><a href="#" class="text-gray-600 hover:text-primary-500 transition-colors">Cobertura Completa</a></li>
-            <li><a href="#" class="text-gray-600 hover:text-primary-500 transition-colors">Assistência 24h</a></li>
-            <li><a href="#" class="text-gray-600 hover:text-primary-500 transition-colors">Rastreador Veicular</a></li>
-          </ul>
-        </div>
+        <!-- Fale Conosco Expandido -->
+        <div>
+          <h3 class="font-bold text-gray-800 mb-4 text-lg">Fale Conosco</h3>
+          <div class="space-y-3">
+            <!-- WhatsApp Principal -->
+            <a
+              href="https://wa.me/5574981256120"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="flex items-center gap-3 p-3 bg-green-50 hover:bg-green-100 rounded-lg transition-colors duration-300 group"
+            >
+              <div class="bg-green-500 rounded-full p-2 group-hover:scale-110 transition-transform">
+                <svg class="w-5 h-5 text-white" fill="currentColor" viewBox="0 0 24 24">
+                  <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347"/>
+                </svg>
+              </div>
+              <div>
+                <div class="font-bold text-green-700 text-sm">WhatsApp Atendimento</div>
+                <div class="text-green-600 font-semibold">(74) 98125-6120</div>
+              </div>
+            </a>
 
-        <!-- Suporte -->
-        <div class="p-6 lg:p-12 border-b md:border-b-0 border-gray-200">
-          <h3 class="text-sm font-semibold text-gray-800 mb-4">Suporte</h3>
-          <ul class="space-y-3">
-            <li><a href="#" class="text-gray-600 hover:text-primary-500 transition-colors">Central de Atendimento</a></li>
-            <li><a href="#" class="text-gray-600 hover:text-primary-500 transition-colors">Regulamento de Proteção</a></li>
-            <li><a href="#" class="text-gray-600 hover:text-primary-500 transition-colors">Solicitar Sinistro</a></li>
-            <li><a href="#" class="text-gray-600 hover:text-primary-500 transition-colors">Política de Privacidade</a></li>
-          </ul>
-        </div>
+            <!-- Telefone -->
+            <div class="flex items-center gap-3 p-3 bg-gray-50 rounded-lg">
+              <div class="bg-blue-500 rounded-full p-2">
+                <svg class="w-5 h-5 text-white" fill="currentColor" viewBox="0 0 24 24">
+                  <path d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z"/>
+                </svg>
+              </div>
+              <div>
+                <div class="font-bold text-gray-700 text-sm">Telefone Comercial</div>
+                <div class="text-gray-600 font-semibold">(74) 98125-6120</div>
+              </div>
+            </div>
 
-        <!-- Newsletter com Brevo -->
-        <div class="p-6 lg:p-12 space-y-6">
-          <div class="space-y-2">
-            <h3 class="text-sm font-semibold text-gray-800">Atualizações AutoShield</h3>
-            <p class="text-sm text-gray-600">Receba alertas, dicas e ofertas especiais</p>
+            <!-- Email -->
+            <div class="flex items-center gap-3 p-3 bg-gray-50 rounded-lg">
+              <div class="bg-purple-500 rounded-full p-2">
+                <svg class="w-5 h-5 text-white" fill="currentColor" viewBox="0 0 24 24">
+                  <path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/>
+                </svg>
+              </div>
+              <div>
+                <div class="font-bold text-gray-700 text-sm">E-mail Comercial</div>
+                <div class="text-gray-600 font-semibold">contato@autoshield.com.br</div>
+              </div>
+            </div>
           </div>
+        </div>
 
-          <form @submit.prevent="subscribeNewsletter" class="space-y-3">
+        <!-- Newsletter e Políticas -->
+        <div>
+          <h3 class="font-bold text-gray-800 mb-4 text-lg">Newsletter & Políticas</h3>
+          <p class="text-gray-600 mb-3 text-sm">
+            Receba dicas exclusivas e ofertas especiais para seu veículo.
+          </p>
+          <form @submit.prevent="subscribeNewsletter" class="flex gap-2 items-center mb-6">
             <input
-              v-model="email"
+              v-model="newsletterEmail"
               type="email"
-              placeholder="Seu melhor e-mail"
-              class="w-full px-4 py-3 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-colors"
+              placeholder="Seu e-mail"
+              class="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-sm transition-colors"
               required
-              :disabled="isSubscribing"
+              autocomplete="email"
             />
             <button
               type="submit"
-              :disabled="isSubscribing || !email"
-              class="w-full bg-primary-500 hover:bg-primary-600 disabled:bg-gray-400 text-white px-4 py-3 rounded-lg font-medium transition-colors flex items-center justify-center"
+              :disabled="isLoading"
+              class="bg-primary-500 hover:bg-primary-600 text-white px-4 py-2 rounded-lg font-medium text-sm transition-colors"
             >
-              <span v-if="isSubscribing">Cadastrando...</span>
-              <span v-else>Quero Receber</span>
-              <ArrowRightIcon v-if="!isSubscribing" class="w-4 h-4 ml-2" />
+              <span v-if="isLoading">Enviando...</span>
+              <span v-else>Cadastrar</span>
             </button>
           </form>
 
-          <!-- Mensagem de Sucesso -->
-          <div
-            v-if="subscriptionSuccess"
-            class="text-sm text-green-600 bg-green-50 p-3 rounded-lg"
-          >
-            ✅ E-mail cadastrado com sucesso!
-          </div>
+          <transition name="fade-in">
+            <div
+              v-if="newsletterSuccess"
+              class="mb-4 text-green-700 bg-green-50 border border-green-200 rounded-lg px-3 py-2 text-xs text-center animate-fade-in-up"
+            >
+              Inscrição realizada! Confira sua caixa de entrada.
+            </div>
+          </transition>
 
-          <!-- Mensagem de Erro -->
-          <div
-            v-if="subscriptionError"
-            class="text-sm text-red-600 bg-red-50 p-3 rounded-lg"
-          >
-            ❌ Erro ao cadastrar. Tente novamente.
-          </div>
+          <transition name="fade-in">
+            <div
+              v-if="newsletterError"
+              class="mb-4 text-red-700 bg-red-50 border border-red-200 rounded-lg px-3 py-2 text-xs text-center animate-fade-in-up"
+            >
+              {{ newsletterError }}
+            </div>
+          </transition>
+
+          <!-- Links das Políticas com Nomes em Inglês -->
+          <nav class="space-y-2">
+            <NuxtLink to="/terms" class="flex items-center gap-2 text-gray-600 hover:text-primary-600 font-semibold transition-colors text-sm group">
+              <svg class="w-4 h-4 group-hover:scale-110 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+              </svg>
+              Termos de Uso
+            </NuxtLink>
+
+            <NuxtLink to="/privacy" class="flex items-center gap-2 text-gray-600 hover:text-primary-600 font-semibold transition-colors text-sm group">
+              <svg class="w-4 h-4 group-hover:scale-110 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+              </svg>
+              Política de Privacidade
+            </NuxtLink>
+
+            <NuxtLink to="/cookies" class="flex items-center gap-2 text-gray-600 hover:text-primary-600 font-semibold transition-colors text-sm group">
+              <svg class="w-4 h-4 group-hover:scale-110 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <circle cx="12" cy="12" r="10" stroke-width="2" />
+                <circle cx="8.5" cy="10.5" r="1.5" />
+                <circle cx="15.5" cy="13.5" r="1.5" />
+                <circle cx="12" cy="16" r="1" />
+              </svg>
+              Política de Cookies
+            </NuxtLink>
+          </nav>
         </div>
       </div>
-    </div>
 
-    <!-- Copyright -->
-    <div class="py-6 text-center text-sm text-gray-600 bg-white border-t border-gray-200">
-      <div class="flex flex-col md:flex-row justify-between items-center space-y-2 md:space-y-0">
-        <div>
-          &copy; {{ new Date().getFullYear() }} AutoShield. Todos os direitos reservados.
-        </div>
-        <div class="flex space-x-4">
-          <a href="#" class="hover:text-primary-500 transition-colors">Termos de Uso</a>
-          <a href="#" class="hover:text-primary-500 transition-colors">Privacidade</a>
-          <a href="#" class="hover:text-primary-500 transition-colors">Cookies</a>
-        </div>
+      <!-- Copyright -->
+      <div class="border-t border-gray-200 mt-10 pt-6 text-center text-gray-600 text-sm">
+        <p>&copy; {{ year }} AutoShield. Todos os direitos reservados. Proteção Veicular Inteligente.</p>
       </div>
     </div>
   </footer>
 </template>
 
 <script setup lang="ts">
-const email = ref('')
-const isSubscribing = ref(false)
-const subscriptionSuccess = ref(false)
-const subscriptionError = ref(false)
+const newsletterEmail = ref('')
+const newsletterSuccess = ref(false)
+const newsletterError = ref('')
+const isLoading = ref(false)
+const year = new Date().getFullYear()
 
 const subscribeNewsletter = async () => {
-  if (!email.value) return
-
-  isSubscribing.value = true
-  subscriptionSuccess.value = false
-  subscriptionError.value = false
+  newsletterSuccess.value = false
+  newsletterError.value = ''
+  isLoading.value = true
 
   try {
-    // Integração com Brevo (SendinBlue)
-    const response = await $fetch('/api/newsletter', {
+    const res = await $fetch('/api/newsletter', {
       method: 'POST',
       body: {
-        email: email.value
+        email: newsletterEmail.value,
+        source: 'Footer Landing Page'
       }
     })
 
-    if (response.success) {
-      subscriptionSuccess.value = true
-      email.value = ''
-
-      // Esconder mensagem após 5 segundos
-      setTimeout(() => {
-        subscriptionSuccess.value = false
-      }, 5000)
+    if (res && res.success) {
+      newsletterSuccess.value = true
+      newsletterEmail.value = ''
     } else {
-      subscriptionError.value = true
+      newsletterError.value = res?.message || 'Erro ao cadastrar. Tente novamente.'
     }
-  } catch (error) {
-    console.error('Erro ao cadastrar newsletter:', error)
-    subscriptionError.value = true
+  } catch (err: any) {
+    newsletterError.value = err?.data?.statusMessage || 'Erro ao cadastrar. Tente novamente.'
   } finally {
-    isSubscribing.value = false
-
-    // Esconder mensagem de erro após 5 segundos
-    if (subscriptionError.value) {
-      setTimeout(() => {
-        subscriptionError.value = false
-      }, 5000)
-    }
+    isLoading.value = false
+    setTimeout(() => {
+      newsletterSuccess.value = false
+      newsletterError.value = ''
+    }, 5000)
   }
 }
 </script>
+
+<style scoped>
+@keyframes fade-in-up {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+@keyframes float {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-10px); }
+}
+.animate-fade-in-up {
+  animation: fade-in-up 0.6s cubic-bezier(0.4, 0, 0.2, 1) both;
+}
+.animate-float {
+  animation: float 5s ease-in-out infinite;
+}
+.animation-delay-2000 {
+  animation-delay: 2s;
+}
+.fade-in-enter-active, .fade-in-leave-active {
+  transition: opacity 0.3s;
+}
+.fade-in-enter-from, .fade-in-leave-to {
+  opacity: 0;
+}
+</style>

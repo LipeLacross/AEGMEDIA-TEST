@@ -1,91 +1,78 @@
-<!-- components/landing/ContactForm.vue - Formulário com EmailJS -->
+<!-- components/landing/ContactForm.vue - Compacto, Responsivo e Espetacular -->
 <template>
-  <section class="bg-white py-16 lg:py-24">
-    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-      <div class="text-center mb-12">
-        <h2 class="text-3xl lg:text-4xl font-bold text-gray-900 mb-4">
-          Solicite sua Cotação Personalizada
+  <section class="relative bg-gradient-to-br from-white via-primary-50 to-blue-50 py-10 lg:py-14 overflow-hidden">
+    <!-- Fundo animado sutil -->
+    <div class="absolute inset-0 pointer-events-none overflow-hidden">
+      <div class="absolute -top-16 -right-16 w-32 h-32 bg-gradient-to-r from-primary-200 to-emerald-200 rounded-full blur-2xl opacity-20 animate-float"></div>
+      <div class="absolute -bottom-16 -left-16 w-24 h-24 bg-gradient-to-r from-blue-200 to-primary-200 rounded-full blur-2xl opacity-15 animate-float animation-delay-2000"></div>
+    </div>
+    <div class="relative max-w-xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="text-center mb-8">
+        <div class="inline-flex items-center px-3 py-1.5 bg-gradient-to-r from-primary-500 to-emerald-500 text-white rounded-full text-xs font-bold shadow-lg mb-3 animate-bounce-slow">
+          <svg class="w-3 h-3 mr-2 animate-spin-slow" fill="currentColor" viewBox="0 0 20 20">
+            <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/>
+          </svg>
+          Cotação Personalizada
+        </div>
+        <h2 class="text-2xl sm:text-3xl lg:text-4xl font-black text-gray-900 mb-2 leading-tight animate-fade-in-up">
+          Solicite sua Proposta
         </h2>
-        <p class="text-lg text-gray-600 max-w-2xl mx-auto">
-          Preencha o formulário e receba uma proposta personalizada de proteção veicular em até 24 horas
+        <p class="text-base lg:text-lg text-gray-700 max-w-lg mx-auto leading-relaxed animate-fade-in-up animation-delay-300">
+          Receba uma proposta exclusiva de proteção veicular em até 24h.
         </p>
       </div>
 
-      <div class="bg-gray-50 rounded-2xl p-8 lg:p-12">
-        <form @submit.prevent="submitForm" class="space-y-6">
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <!-- Nome Completo -->
+      <div class="bg-white rounded-2xl p-4 sm:p-6 lg:p-8 shadow-xl animate-fade-in-up animation-delay-500">
+        <form @submit.prevent="submitForm" class="space-y-4">
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
-              <label for="name" class="block text-sm font-medium text-gray-700 mb-2">
-                Nome Completo *
-              </label>
               <input
                 id="name"
                 v-model="form.name"
                 type="text"
                 required
-                class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-colors"
-                placeholder="Seu nome completo"
+                class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-sm transition-colors"
+                placeholder="Nome Completo *"
               />
             </div>
-
-            <!-- Email -->
             <div>
-              <label for="email" class="block text-sm font-medium text-gray-700 mb-2">
-                E-mail *
-              </label>
               <input
                 id="email"
                 v-model="form.email"
                 type="email"
                 required
-                class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-colors"
-                placeholder="seu@email.com"
+                class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-sm transition-colors"
+                placeholder="E-mail *"
               />
             </div>
-
-            <!-- Telefone -->
             <div>
-              <label for="phone" class="block text-sm font-medium text-gray-700 mb-2">
-                Telefone/WhatsApp *
-              </label>
               <input
                 id="phone"
                 v-model="form.phone"
                 type="tel"
                 required
-                class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-colors"
-                placeholder="(11) 99999-9999"
+                class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-sm transition-colors"
+                placeholder="Telefone/WhatsApp *"
               />
             </div>
-
-            <!-- Cidade -->
             <div>
-              <label for="city" class="block text-sm font-medium text-gray-700 mb-2">
-                Cidade *
-              </label>
               <input
                 id="city"
                 v-model="form.city"
                 type="text"
                 required
-                class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-colors"
-                placeholder="São Paulo, SP"
+                class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-sm transition-colors"
+                placeholder="Cidade *"
               />
             </div>
-
-            <!-- Marca do Veículo -->
             <div>
-              <label for="brand" class="block text-sm font-medium text-gray-700 mb-2">
-                Marca do Veículo *
-              </label>
               <select
                 id="brand"
                 v-model="form.brand"
                 required
-                class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-colors"
+                class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-sm transition-colors"
               >
-                <option value="">Selecione a marca</option>
+                <option value="">Marca *</option>
                 <option value="Toyota">Toyota</option>
                 <option value="Volkswagen">Volkswagen</option>
                 <option value="Chevrolet">Chevrolet</option>
@@ -98,50 +85,35 @@
                 <option value="Outra">Outra</option>
               </select>
             </div>
-
-            <!-- Modelo -->
             <div>
-              <label for="model" class="block text-sm font-medium text-gray-700 mb-2">
-                Modelo *
-              </label>
               <input
                 id="model"
                 v-model="form.model"
                 type="text"
                 required
-                class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-colors"
-                placeholder="Ex: Corolla, Civic, Gol"
+                class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-sm transition-colors"
+                placeholder="Modelo *"
               />
             </div>
-
-            <!-- Ano -->
             <div>
-              <label for="year" class="block text-sm font-medium text-gray-700 mb-2">
-                Ano *
-              </label>
               <select
                 id="year"
                 v-model="form.year"
                 required
-                class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-colors"
+                class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-sm transition-colors"
               >
-                <option value="">Selecione o ano</option>
+                <option value="">Ano *</option>
                 <option v-for="year in years" :key="year" :value="year">{{ year }}</option>
               </select>
             </div>
-
-            <!-- Valor do Veículo -->
             <div>
-              <label for="value" class="block text-sm font-medium text-gray-700 mb-2">
-                Valor Aproximado *
-              </label>
               <select
                 id="value"
                 v-model="form.value"
                 required
-                class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-colors"
+                class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-sm transition-colors"
               >
-                <option value="">Selecione a faixa</option>
+                <option value="">Valor Aproximado *</option>
                 <option value="Até R$ 30.000">Até R$ 30.000</option>
                 <option value="R$ 30.001 - R$ 50.000">R$ 30.001 - R$ 50.000</option>
                 <option value="R$ 50.001 - R$ 100.000">R$ 50.001 - R$ 100.000</option>
@@ -151,22 +123,17 @@
             </div>
           </div>
 
-          <!-- Mensagem -->
           <div>
-            <label for="message" class="block text-sm font-medium text-gray-700 mb-2">
-              Mensagem Adicional
-            </label>
             <textarea
               id="message"
               v-model="form.message"
-              rows="4"
-              class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-colors"
-              placeholder="Conte-nos mais sobre suas necessidades..."
+              rows="2"
+              class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-sm transition-colors"
+              placeholder="Mensagem adicional (opcional)"
             ></textarea>
           </div>
 
-          <!-- Termos -->
-          <div class="flex items-start space-x-3">
+          <div class="flex items-start space-x-2">
             <input
               id="terms"
               v-model="form.acceptTerms"
@@ -174,23 +141,21 @@
               required
               class="mt-1 h-4 w-4 text-primary-500 focus:ring-primary-500 border-gray-300 rounded"
             />
-            <label for="terms" class="text-sm text-gray-600">
-              Aceito os <a href="#" class="text-primary-500 hover:underline">termos de uso</a> e
-              <a href="#" class="text-primary-500 hover:underline">política de privacidade</a>.
-              Autorizo o contato para ofertas de proteção veicular. *
+            <label for="terms" class="text-xs text-gray-600">
+              Aceito os <a href="/terms" class="text-primary-500 hover:underline">termos de uso</a> e
+              <a href="/privacy" class="text-primary-500 hover:underline">política de privacidade</a>.
             </label>
           </div>
 
-          <!-- Botão de Envio -->
           <div class="text-center">
             <button
               type="submit"
               :disabled="isSubmitting"
-              class="bg-primary-500 hover:bg-primary-600 disabled:bg-gray-400 text-white px-8 py-4 rounded-lg font-semibold text-lg transition-colors inline-flex items-center space-x-2"
+              class="bg-primary-500 hover:bg-primary-600 disabled:bg-gray-400 text-white px-6 py-3 rounded-lg font-semibold text-sm transition-colors inline-flex items-center space-x-2"
             >
               <span v-if="isSubmitting">Enviando...</span>
-              <span v-else>Solicitar Cotação Gratuita</span>
-              <svg v-if="!isSubmitting" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <span v-else>Solicitar Cotação</span>
+              <svg v-if="!isSubmitting" class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6" />
               </svg>
             </button>
@@ -198,20 +163,22 @@
         </form>
 
         <!-- Mensagem de Sucesso -->
-        <div
-          v-if="showSuccess"
-          class="mt-6 bg-green-50 border border-green-200 rounded-lg p-4 text-center"
-        >
-          <div class="flex justify-center items-center space-x-2 text-green-800">
-            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-            </svg>
-            <span class="font-semibold">Cotação enviada com sucesso!</span>
+        <transition name="fade-in">
+          <div
+            v-if="showSuccess"
+            class="mt-4 bg-green-50 border border-green-200 rounded-lg p-3 text-center animate-fade-in-up"
+          >
+            <div class="flex justify-center items-center space-x-2 text-green-800">
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+              <span class="font-semibold text-sm">Cotação enviada com sucesso!</span>
+            </div>
+            <p class="text-green-700 mt-1 text-xs">
+              Recebemos sua solicitação. Nossa equipe entrará em contato em até 24 horas.
+            </p>
           </div>
-          <p class="text-green-700 mt-2">
-            Recebemos sua solicitação. Nossa equipe entrará em contato em até 24 horas.
-          </p>
-        </div>
+        </transition>
       </div>
     </div>
   </section>
@@ -240,11 +207,11 @@ const form = ref({
 const currentYear = new Date().getFullYear()
 const years = Array.from({ length: 30 }, (_, i) => currentYear - i)
 
+// Envio do formulário com EmailJS
 const submitForm = async () => {
   isSubmitting.value = true
 
   try {
-    // Configurar EmailJS (substitua pelos seus IDs)
     const templateParams = {
       to_name: 'Equipe AutoShield',
       from_name: form.value.name,
@@ -258,10 +225,10 @@ const submitForm = async () => {
     }
 
     await emailjs.send(
-      'YOUR_SERVICE_ID', // Substitua pelo seu Service ID
-      'YOUR_TEMPLATE_ID', // Substitua pelo seu Template ID
+      'service_60si7y9',     // Substitua pelo seu Service ID
+      'template_2q2d36q',    // Substitua pelo seu Template ID
       templateParams,
-      'YOUR_PUBLIC_KEY' // Substitua pela sua Public Key
+      'Ai_tl6w2eT1iWXjcO'      // Substitua pela sua Public Key
     )
 
     showSuccess.value = true
@@ -280,7 +247,6 @@ const submitForm = async () => {
       acceptTerms: false
     }
 
-    // Esconder mensagem de sucesso após 5 segundos
     setTimeout(() => {
       showSuccess.value = false
     }, 5000)
@@ -298,3 +264,66 @@ onMounted(() => {
   emailjs.init('YOUR_PUBLIC_KEY') // Substitua pela sua Public Key
 })
 </script>
+
+<style scoped>
+@keyframes fade-in-up {
+  from {
+    opacity: 0;
+    transform: translateY(24px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0px) scale(1);
+  }
+  50% {
+    transform: translateY(-10px) scale(1.04);
+  }
+}
+@keyframes bounce-slow {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-7px);
+  }
+}
+@keyframes spin-slow {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+.animate-fade-in-up {
+  animation: fade-in-up 0.7s cubic-bezier(0.4, 0, 0.2, 1) both;
+}
+.animate-float {
+  animation: float 6s ease-in-out infinite;
+}
+.animate-bounce-slow {
+  animation: bounce-slow 2.2s ease-in-out infinite;
+}
+.animate-spin-slow {
+  animation: spin-slow 7s linear infinite;
+}
+.fade-in-enter-active, .fade-in-leave-active {
+  transition: opacity 0.3s;
+}
+.fade-in-enter-from, .fade-in-leave-to {
+  opacity: 0;
+}
+@media (max-width: 640px) {
+  .rounded-2xl {
+    border-radius: 1rem;
+  }
+  .p-8 {
+    padding: 1.25rem;
+  }
+}
+</style>

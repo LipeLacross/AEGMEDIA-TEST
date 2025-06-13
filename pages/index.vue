@@ -1,13 +1,13 @@
 <!-- pages/index.vue -->
 <template>
   <div>
-    <!-- Layout da Landing Page AutoShield -->
-    <LandingHero />
-    <LandingServices />
-    <LandingTestimonials />
-    <LandingContactForm />
-    <LandingChatBot />
-    <LandingFAQ />
+    <LandingHero id="hero" />
+    <LandingPricing id="planos" />
+    <LandingServices id="coberturas" />
+    <LandingAboutUs id="sobre-nos" />
+    <LandingTestimonials id="depoimentos" />
+    <LandingFAQ id="faq" />
+    <LandingContactForm id="contato" />
   </div>
 </template>
 
@@ -19,6 +19,22 @@ useHead({
     {
       name: 'description',
       content: 'Proteção veicular inteligente com IA integrada. Cobertura 24h, assistência completa e planos personalizados.'
+    },
+    {
+      name: 'keywords',
+      content: 'proteção veicular, seguro auto, rastreamento, assistência 24h, AutoShield, IA'
+    },
+    {
+      property: 'og:title',
+      content: 'AutoShield - Proteção Veicular Completa'
+    },
+    {
+      property: 'og:description',
+      content: 'Proteção veicular inteligente com IA integrada. Cobertura 24h, assistência completa e planos personalizados.'
+    },
+    {
+      property: 'og:type',
+      content: 'website'
     }
   ]
 })

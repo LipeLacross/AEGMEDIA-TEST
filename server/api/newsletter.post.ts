@@ -26,7 +26,7 @@ export default defineEventHandler(async (event): Promise<NewsletterResponse> => 
     if (!email?.trim()) {
       throw createError({
         statusCode: 400,
-        statusMessage: 'Email é obrigatório'
+        statusMessage: 'Email é obrigatório',
       })
     }
 
@@ -35,7 +35,7 @@ export default defineEventHandler(async (event): Promise<NewsletterResponse> => 
     if (!emailRegex.test(email)) {
       throw createError({
         statusCode: 400,
-        statusMessage: 'Formato de email inválido'
+        statusMessage: 'Formato de email inválido',
       })
     }
 
@@ -46,7 +46,7 @@ export default defineEventHandler(async (event): Promise<NewsletterResponse> => 
     if (!brevoApiKey) {
       throw createError({
         statusCode: 500,
-        statusMessage: 'Configuração do serviço de newsletter não encontrada'
+        statusMessage: 'Configuração do serviço de newsletter não encontrada',
       })
     }
 
@@ -54,7 +54,7 @@ export default defineEventHandler(async (event): Promise<NewsletterResponse> => 
     if (isNaN(listId)) {
       throw createError({
         statusCode: 500,
-        statusMessage: 'ID da lista inválido'
+        statusMessage: 'ID da lista inválido',
       })
     }
 
@@ -64,16 +64,16 @@ export default defineEventHandler(async (event): Promise<NewsletterResponse> => 
       listIds: [listId],
       attributes: {
         ORIGEM: source,
-        DATA_CADASTRO: new Date().toISOString().split('T')[0],
-        ...(name && { NOME: name.trim() })
+        DATA_CADASTRO: new Date().toISOString().split('T')[0] ?? '',
+        ...(name && { NOME: name.trim() }),
       },
-      updateEnabled: true
+      updateEnabled: true,
     }
 
     // Fazer requisição para Brevo com headers tipados
     const headers: Record<string, string> = {
       'accept': 'application/json',
-      'content-type': 'application/json'
+      'content-type': 'application/json',
     }
 
     if (brevoApiKey) {
@@ -83,28 +83,28 @@ export default defineEventHandler(async (event): Promise<NewsletterResponse> => 
     const _response = await $fetch('https://api.brevo.com/v3/contacts', {
       method: 'POST',
       headers,
-      body: contactData
+      body: contactData,
     })
 
     return {
       success: true,
-      message: 'E-mail cadastrado com sucesso! Você receberá nossas atualizações em breve.'
+      message: 'E-mail cadastrado com sucesso! Você receberá nossas atualizações em breve.',
     }
-
-  } catch (error: unknown) {
+  }
+  catch (error: unknown) {
     console.error('Erro ao cadastrar no Brevo:', error)
 
     // Type guard para erro
-    const isBrevoError = (err: unknown): err is { status: number; data?: { message?: string } } => {
+    const isBrevoError = (err: unknown): err is { status: number, data?: { message?: string } } => {
       return typeof err === 'object' && err !== null && 'status' in err
     }
 
     // Se o contato já existe, considerar como sucesso
-    if (isBrevoError(error) && error.status === 400 &&
-        error.data?.message?.includes('already exists')) {
+    if (isBrevoError(error) && error.status === 400
+      && error.data?.message?.includes('already exists')) {
       return {
         success: true,
-        message: 'E-mail já cadastrado! Você já receberá nossas atualizações.'
+        message: 'E-mail já cadastrado! Você já receberá nossas atualizações.',
       }
     }
 
@@ -115,7 +115,7 @@ export default defineEventHandler(async (event): Promise<NewsletterResponse> => 
 
     throw createError({
       statusCode: 500,
-      statusMessage: 'Erro ao cadastrar newsletter. Tente novamente mais tarde.'
+      statusMessage: 'Erro ao cadastrar newsletter. Tente novamente mais tarde.',
     })
   }
 })

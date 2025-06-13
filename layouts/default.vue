@@ -11,6 +11,12 @@
 
     <!-- Footer -->
     <BaseFooter />
+
+    <!-- Botões flutuantes fixos -->
+    <div class="fixed bottom-6 right-6 z-50 flex flex-col space-y-4">
+      <LandingBackToTop/>
+      <LandingChatBot />
+    </div>
   </div>
 </template>
 
@@ -30,6 +36,9 @@ useHead({
       name: 'theme-color',
       content: '#10b981'
     }
+  ],
+  link: [
+    { rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' }
   ]
 })
 </script>
