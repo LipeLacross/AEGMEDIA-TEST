@@ -1,4 +1,4 @@
-// server/api/chat.post.ts - Versão Completamente Corrigida
+// server/api/chat.post.ts - Versão FINAL com Tipos Corretos
 import { HfInference } from '@huggingface/inference'
 
 interface ChatMessage {
@@ -20,15 +20,28 @@ interface ChatResponse {
   debug?: string
 }
 
-// Configurações otimizadas para evitar ECONNRESET
+// Configurações otimizadas para modelos de 2025
 const CONFIG = {
   MAX_RETRIES: 3,
-  TIMEOUT_MS: 15000,
-  RETRY_DELAY_MS: 1000,
+  TIMEOUT_MS: 8000,
+  RETRY_DELAY_MS: 1500,
   MAX_SESSIONS: 100,
   SESSION_TTL_MS: 30 * 60 * 1000,
   BACKOFF_MULTIPLIER: 2
-}
+} as const
+
+// Modelos prioritários atualizados
+const STABLE_MODELS = [
+  'google/gemma-2-2b-it',
+  'meta-llama/Meta-Llama-3-8B-Instruct', // Versão gratuita para uso comercial
+  'mistralai/Mistral-7B-Instruct-v0.2',
+  'tiiuae/falcon-7b',
+  'meta-llama/Llama-2-7B-chat-hf'
+] as const
+
+
+// Type helper para garantir que temos um modelo válido
+type ValidModel = typeof STABLE_MODELS[number]
 
 // Validação do token
 const validateToken = (token: string | undefined): boolean => {
@@ -40,51 +53,48 @@ const delay = (ms: number): Promise<void> => {
   return new Promise(resolve => setTimeout(resolve, ms))
 }
 
-// Fallback responses inteligentes com suporte a tipos de erro
+// Fallback responses em português otimizado
 const getIntelligentFallback = (message: string, errorType?: string): string => {
   const lowerMessage = message.toLowerCase()
 
   let baseResponse = ''
 
   if (lowerMessage.includes('preço') || lowerMessage.includes('custo') || lowerMessage.includes('valor')) {
-    baseResponse = `Nossos planos da AutoShield começam em R$ 89/mês e incluem:
-• Cobertura completa contra roubo e furto
-• Rastreamento GPS com IA gratuito
-• Assistência 24h em todo Brasil
-• Guincho ilimitado
+    baseResponse = `💰 **Planos AutoShield:**
 
-Para uma cotação personalizada, fale conosco no WhatsApp: (74) 98125-6120`
+• **Essencial**: R$ 89/mês - Cobertura básica completa
+• **Completo**: R$ 149/mês - Proteção total + benefícios extras  
+• **Premium**: R$ 229/mês - Máxima proteção + serviços VIP
+
+📱 Fale conosco: (74) 98125-6120`
   } else if (lowerMessage.includes('cobertura') || lowerMessage.includes('proteção')) {
-    baseResponse = `A AutoShield oferece proteção completa:
+    baseResponse = `🛡️ **Proteção AutoShield:**
+
 • Roubo e furto total
-• Colisão e incêndio
-• Fenômenos naturais
-• Assistência 24h completa
 • Rastreamento GPS inteligente
+• Assistência 24h Brasil
+• Guincho ilimitado
+• Cobertura de vidros
 
-Fundada por Felipe Moreira Rios, somos referência em proteção veicular premium.`
+📞 Contato: (74) 98125-6120`
   } else if (lowerMessage.includes('contato') || lowerMessage.includes('falar') || lowerMessage.includes('atendimento')) {
-    baseResponse = `Entre em contato conosco:
-📱 WhatsApp: (74) 98125-6120
-📧 Email: contato@autoshield.com.br
-🕒 Atendimento 24h disponível
+    baseResponse = `📞 **Fale Conosco:**
 
-Nossa equipe está pronta para ajudar com qualquer dúvida!`
+• WhatsApp: (74) 98125-6120
+• Email: contato@autoshield.com.br
+• Atendimento 24h disponível
+
+Nossa equipe especializada está pronta para ajudar!`
   } else {
-    baseResponse = `Olá! Sou o assistente da AutoShield, empresa fundada por Felipe Moreira Rios.
+    baseResponse = `👋 Olá! Sou o assistente da AutoShield.
 
-Como posso ajudá-lo hoje?
+🚗 **Como posso ajudar:**
 • Informações sobre planos e preços
 • Detalhes de cobertura
 • Contratação e atendimento
 • Dúvidas sobre proteção veicular
 
-Para atendimento imediato: (74) 98125-6120`
-  }
-
-  // Adicionar informação sobre instabilidade se for erro de conexão
-  if (errorType === 'ECONNRESET' || errorType === 'API_ERROR') {
-    baseResponse += `\n\n⚠️ Momentaneamente com instabilidade na IA. Respondendo com base no conhecimento local.`
+📱 **Contato direto:** (74) 98125-6120`
   }
 
   return baseResponse
@@ -92,18 +102,55 @@ Para atendimento imediato: (74) 98125-6120`
 
 // Fallback de emergência
 const getEmergencyFallback = (): string => {
-  return `Olá! Momentaneamente estou com dificuldades técnicas, mas posso ajudá-lo:
+  return `🚨 **Sistema Temporariamente Indisponível**
 
-📞 **Atendimento Direto:**
+📞 **Contato Imediato:**
 WhatsApp: (74) 98125-6120
 
 💡 **Informações Rápidas:**
-• Planos a partir de R$ 89/mês
-• Cobertura completa 24h
-• GPS gratuito incluso
-• Empresa fundada por Felipe Moreira Rios
+• AutoShield: Proteção veicular premium
+• Planos: R$ 89, R$ 149 e R$ 229/mês
+• Cobertura 24h em todo Brasil
+• CEO: Felipe Moreira Rios
 
-Nossa equipe está disponível para atendimento personalizado!`
+Nossa equipe está disponível para ajudar!`
+}
+
+// FUNÇÃO CORRIGIDA: Tipos seguros para modelos
+const tryWithStableModels = async (messages: ChatMessage[]): Promise<string> => {
+  for (const model of STABLE_MODELS) {
+    try {
+      console.log(`🤖 Testando modelo: ${model}`)
+
+      // CORREÇÃO PRINCIPAL: model agora é garantidamente um tipo literal de string
+      const response = await Promise.race([
+        hf.chatCompletion({
+          model, // Agora é do tipo ValidModel, não pode ser undefined
+          messages: messages.map(msg => ({
+            role: msg.role as 'user' | 'assistant' | 'system',
+            content: msg.content
+          })),
+          max_tokens: 200,
+          temperature: 0.7,
+          top_p: 0.9
+        }),
+        new Promise<never>((_, reject) =>
+          setTimeout(() => reject(new Error('TIMEOUT')), CONFIG.TIMEOUT_MS)
+        )
+      ])
+
+      if (response?.choices?.[0]?.message?.content) {
+        console.log(`✅ Sucesso com modelo: ${model}`)
+        return response.choices[0].message.content.trim()
+      }
+    } catch (error: unknown) {
+      const errorMessage = error instanceof Error ? error.message : 'Erro desconhecido'
+      console.error(`❌ Modelo ${model} falhou:`, errorMessage)
+      continue
+    }
+  }
+
+  return '' // Todos os modelos falharam
 }
 
 // Função para limpar sessões antigas
@@ -165,65 +212,79 @@ export default defineEventHandler(async (event): Promise<ChatResponse> => {
       }
     }
 
-    // Preparar mensagens para chat completion
+// Prompt do sistema totalmente reformulado
+const systemPrompt = `Você é o Vendedor Sênior da AutoShield com 15 anos de experiência. 
+
+**Dados da Empresa:**
+- Planos: Essencial (R$89), Completo (R$149), Premium (R$229)
+- Coberturas: Roubo, colisão, incêndio, assistência 24h, GPS inteligente
+- Diferenciais: App exclusivo, desconto progressivo, carro reserva
+
+**Técnicas de Vendas:**
+1. Identificar necessidade: Perguntar tipo de veículo, uso diário, preocupações
+2. Oferecer upsell: Ex: "Para seu SUV 2023, recomendo o Premium com cobertura total"
+3. Criar urgência: "Hoje temos 10% de desconto para contratação imediata"
+4. Lidar com objeções: 
+   - "É caro" → Mostrar economia anual vs seguro tradicional
+   - "Preciso pensar" → Oferecer análise gratuita do veículo
+
+**Formato de Respostas:**
+[Início] Saudação personalizada
+[Meio] Benefícios específicos + comparação de planos
+[Fim] CTA claro + link WhatsApp
+
+**Exemplo de Resposta Profissional:**
+"Olá [Nome], para seu Corolla 2022 que roda 50km/dia, nosso plano Completo oferece... 
+👉 WhatsApp para contratação imediata: (74) 98125-6120"`
+
+    // Preparar mensagens com tipos seguros
     const messages: ChatMessage[] = [
       {
         role: 'system' as const,
-        content: `Você é o assistente virtual da AutoShield Proteção Veicular, empresa fundada por Felipe Moreira Rios.
-        
-        Informações essenciais:
-        - CEO: Felipe Moreira Rios (CNPJ: 12.345.678/0001-99)
-        - Especialidade: Proteção veicular premium com tecnologia de ponta
-        - Planos a partir de R$ 89/mês
-        - Cobertura 24h completa
-        - WhatsApp: (74) 98125-6120
-
-        Responda de forma clara, objetiva e sempre em português brasileiro.`
+        content: systemPrompt
       },
-      ...context.slice(-6), // Últimas 6 mensagens de contexto
+      ...context.slice(-6),
       {
         role: 'user' as const,
-        content: message
+        content: `[PT-BR] ${message}`
       }
     ]
 
     let reply = ''
 
+    // Tentar com todos os modelos estáveis
     for (let attempt = 1; attempt <= CONFIG.MAX_RETRIES; attempt++) {
       try {
-        console.log(`Tentativa ${attempt}/${CONFIG.MAX_RETRIES} para Hugging Face...`)
+        console.log(`🔄 Tentativa ${attempt}/${CONFIG.MAX_RETRIES}`)
 
-        // Usar chatCompletion ao invés de textGeneration
-        const response = await Promise.race([
-          hf.chatCompletion({
-            model: 'mistralai/Mistral-7B-Instruct-v0.2',
-            messages: messages as any, // Type assertion temporária
-            max_tokens: 200,
-            temperature: 0.7,
-            top_p: 0.9
-          }),
-          new Promise<never>((_, reject) =>
-            setTimeout(() => reject(new Error('TIMEOUT')), CONFIG.TIMEOUT_MS)
-          )
-        ])
+        reply = await tryWithStableModels(messages)
 
-        // Extrair resposta do formato chat completion
-        if (response?.choices?.[0]?.message?.content) {
-          reply = response.choices[0].message.content.trim()
+        if (reply && reply.length > 10) {
+          // Filtrar respostas em inglês
+          if (reply.includes('I\'m here to help') ||
+              reply.includes('AutoShield company') ||
+              reply.toLowerCase().includes('vehicle protection')) {
+            console.log('🔍 Resposta em inglês detectada, usando fallback')
+            reply = getIntelligentFallback(message, 'LANGUAGE_ERROR')
+          }
           break
         }
-
       } catch (error: unknown) {
         const errorMessage = error instanceof Error ? error.message : 'Erro desconhecido'
-        console.error(`Erro na tentativa ${attempt}:`, errorMessage)
+        console.error(`❌ Tentativa ${attempt} falhou:`, errorMessage)
 
         if (attempt === CONFIG.MAX_RETRIES) {
-          reply = getIntelligentFallback(message, 'API_ERROR')
+          reply = getIntelligentFallback(message, 'MODEL_ERROR')
         } else {
           const waitTime = CONFIG.RETRY_DELAY_MS * Math.pow(CONFIG.BACKOFF_MULTIPLIER, attempt - 1)
           await delay(waitTime)
         }
       }
+    }
+
+    // Fallback final se todas as tentativas falharam
+    if (!reply || reply.length < 10) {
+      reply = getIntelligentFallback(message, 'ALL_FAILED')
     }
 
     // Atualizar contexto
@@ -236,16 +297,16 @@ export default defineEventHandler(async (event): Promise<ChatResponse> => {
     conversationMemory.set(sessionId, newContext)
 
     const processingTime = Date.now() - startTime
-    console.log(`Processamento concluído em ${processingTime}ms`)
+    console.log(`✅ Processamento concluído em ${processingTime}ms`)
 
     return {
-      reply: reply || getIntelligentFallback(message),
+      reply: reply,
       timestamp: new Date().toISOString(),
       context: newContext
     }
 
   } catch (error: unknown) {
-    console.error('Erro crítico na API:', error)
+    console.error('❌ Erro crítico na API:', error)
     return {
       reply: getEmergencyFallback(),
       context: [],
