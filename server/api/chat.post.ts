@@ -1,4 +1,4 @@
-// server/api/chat.post.ts - API de chat com Hugging Face corrigida
+// server/api/chat.post.ts - API atualizada com memória e conhecimento específico
 import { HfInference } from '@huggingface/inference'
 
 interface ChatMessage {
@@ -9,20 +9,25 @@ interface ChatMessage {
 interface ChatRequest {
   message: string
   context?: ChatMessage[]
+  sessionId?: string // Novo campo para identificação de sessão
 }
 
 interface ChatResponse {
   reply: string
   timestamp: string
+  context: ChatMessage[] // Retorna o contexto atualizado
   error?: boolean
 }
 
 const hf = new HfInference(process.env.HUGGINGFACE_TOKEN)
 
+// Memória persistente (simulada para exemplo)
+const conversationMemory = new Map<string, ChatMessage[]>()
+
 export default defineEventHandler(async (event): Promise<ChatResponse> => {
   try {
     const body = await readBody<ChatRequest>(event)
-    const { message, context = [] } = body
+    let { message, context = [], sessionId } = body
 
     if (!message?.trim()) {
       throw createError({
@@ -31,68 +36,88 @@ export default defineEventHandler(async (event): Promise<ChatResponse> => {
       })
     }
 
-    // Prompt personalizado para proteção veicular
-    const systemPrompt = `Você é um assistente especializado em proteção veicular da empresa AutoShield.
-    Responda sempre de forma profissional, prestativa e focada em proteção veicular.
+    // Gera sessionId se não existir
+    if (!sessionId) {
+      sessionId = Math.random().toString(36).substring(2, 15)
+    }
 
-    Informações da AutoShield:
-    - Empresa líder em proteção veicular no Brasil
-    - Cobertura 24h para roubo, furto, colisão, incêndio
-    - Assistência mecânica e guincho gratuito
-    - Rastreamento GPS incluso gratuitamente
-    - Planos a partir de R$ 89/mês
-    - Atendimento via WhatsApp: (11) 9999-9999
+    // Recupera histórico da memória se existir
+    if (conversationMemory.has(sessionId)) {
+      context = conversationMemory.get(sessionId) || []
+    }
 
-    Responda de forma clara, objetiva e sempre em português brasileiro.
-    Seja útil e direcionado, oferecendo soluções práticas.`
+    // Prompt atualizado com informações específicas
+    const systemPrompt = `Você é o assistente virtual da AutoShield Proteção Veicular, empresa fundada e dirigida por Felipe Moreira Rios.
+    
+    Informações essenciais:
+    - CEO: Felipe Moreira Rios (CNPJ: 12.345.678/0001-99)
+    - Especialidade: Proteção veicular premium com tecnologia de ponta
+    - Diferenciais: 
+      • Rastreamento inteligente com IA
+      • Assistência 24h personalizada
+      • Reparo em oficinas parceiras premium
+    
+    Promoções ativas:
+    - Plano Gold: 20% OFF no 1º ano + kit segurança
+    - Plano Platinum: Isenção de franquia + GPS inteligente
+    - Indicação: R$100 de crédito por amigo indicado
 
-    const conversationHistory = context
-      .slice(-10) // Limitar histórico para performance
-      .map((msg: ChatMessage) =>
-        `${msg.role === 'user' ? 'Cliente' : 'AutoShield'}: ${msg.content}`
-      ).join('\n')
+    Formato de respostas:
+    1. Priorizar informações técnicas
+    2. Oferecer soluções práticas
+    3. Finalizar com call-to-action relevante`
 
-    const fullPrompt = `${systemPrompt}\n\nHistórico:\n${conversationHistory}\n\nCliente: ${message}\nAutoShield:`
+    const history = context
+      .slice(-8) // Mantém as últimas 8 mensagens
+      .map(msg => `${msg.role === 'user' ? '[Cliente]' : '[Assistente]'} ${msg.content}`)
+      .join('\n')
+
+    const fullPrompt = `${systemPrompt}\n\nHistórico:\n${history}\n\n[Cliente] ${message}\n[Assistente]`
 
     const response = await hf.textGeneration({
       model: 'mistralai/Mistral-7B-Instruct-v0.2',
       inputs: fullPrompt,
       parameters: {
-        max_new_tokens: 250,
-        temperature: 0.7,
-        top_p: 0.9,
-        do_sample: true,
-        stop: ['Cliente:', 'AutoShield:', '\n\n'],
-        repetition_penalty: 1.1
+        max_new_tokens: 300,
+        temperature: 0.65,
+        repetition_penalty: 1.15,
+        top_p: 0.85,
+        stop: ['[Cliente]', '[Assistente]']
       }
     })
 
-    // Processa a resposta
     let reply = response.generated_text
       .replace(fullPrompt, '')
+      .split('[Cliente]')[0]
       .trim()
 
-    // Fallback se a resposta estiver vazia ou muito curta
-    if (!reply || reply.length < 10) {
-      reply = "Olá! Sou o assistente da AutoShield. Como posso ajudá-lo com informações sobre proteção veicular? Posso esclarecer dúvidas sobre planos, coberturas ou processos."
+    // Fallback estratégico
+    if (reply.length < 15) {
+      reply = `Olá! Sou o assistente da AutoShield, fundada por Felipe Moreira Rios. Posso ajudar com:`
+      + `\n• Informações sobre planos\n• Ativação de coberturas\n• Promoções especiais`
     }
 
-    // Limpar resposta de caracteres indesejados
-    reply = reply
-      .replace(/^\s*-\s*/, '') // Remove traços no início
-      .replace(/\s+/g, ' ') // Normaliza espaços
-      .trim()
+    // Atualiza contexto
+    const newContext = [
+      ...context.slice(-14), // Mantém histórico equilibrado
+      { role: 'user', content: message },
+      { role: 'assistant', content: reply }
+    ]
+
+    // Armazena na memória
+    conversationMemory.set(sessionId, newContext)
 
     return {
-      reply,
-      timestamp: new Date().toISOString()
+      reply: reply.replace(/(\d+)\./g, '•'), // Melhora formatação
+      timestamp: new Date().toISOString(),
+      context: newContext
     }
 
   } catch (error) {
-    console.error('Erro na API do chat:', error)
-
+    console.error('Erro na API:', error)
     return {
-      reply: "Desculpe, estou com dificuldades técnicas no momento. Por favor, tente novamente em alguns instantes ou entre em contato pelo WhatsApp (11) 9999-9999 para atendimento imediato.",
+      reply: "Estou com dificuldades técnicas. Por favor, contate-nos diretamente: (74) 98125-6120 (WhatsApp)",
+      context: [],
       error: true,
       timestamp: new Date().toISOString()
     }
