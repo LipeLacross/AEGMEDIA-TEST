@@ -1,8 +1,8 @@
-# .github/dependabot.yml
+# .github/dependabot.yml - Versão Corrigida e Otimizada
 version: 2
 updates:
-  # Configuração para dependências npm
-  - package-ecosystem: "npm"
+  - name: "Atualizações de Pacotes NPM"
+    package-manager: "npm"
     directory: "/"
     schedule:
       interval: "weekly"
@@ -17,9 +17,13 @@ updates:
     labels:
       - "dependencies"
       - "npm"
+    automerge: false
+    ignore:
+      - dependency-name: "typescript@^5.8.3"
+      - dependency-name: "nuxt@^3.17.5"
 
-  # Configuração para GitHub Actions
-  - package-ecosystem: "github-actions"
+  - name: "Atualizações de GitHub Actions"
+    package-manager: "github-actions"
     directory: "/"
     schedule:
       interval: "monthly"
@@ -28,3 +32,4 @@ updates:
     labels:
       - "github-actions"
       - "ci"
+    automerge: false

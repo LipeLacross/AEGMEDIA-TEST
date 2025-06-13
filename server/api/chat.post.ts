@@ -1,4 +1,4 @@
-// server/api/chat.post.ts - API atualizada com memória e conhecimento específico
+// server/api/chat.post.ts - Correção do ESLint
 import { HfInference } from '@huggingface/inference'
 
 interface ChatMessage {
@@ -9,25 +9,31 @@ interface ChatMessage {
 interface ChatRequest {
   message: string
   context?: ChatMessage[]
-  sessionId?: string // Novo campo para identificação de sessão
+  sessionId?: string
 }
 
 interface ChatResponse {
   reply: string
   timestamp: string
-  context: ChatMessage[] // Retorna o contexto atualizado
+  context: ChatMessage[]
   error?: boolean
+}
+
+interface HuggingFaceResponse {
+  generated_text?: string
 }
 
 const hf = new HfInference(process.env.HUGGINGFACE_TOKEN)
 
-// Memória persistente (simulada para exemplo)
 const conversationMemory = new Map<string, ChatMessage[]>()
 
 export default defineEventHandler(async (event): Promise<ChatResponse> => {
   try {
     const body = await readBody<ChatRequest>(event)
-    let { message, context = [], sessionId } = body
+
+    // CORREÇÃO PRINCIPAL: Declaração com const para variáveis não reatribuídas
+    const { message, context = [] } = body
+    let sessionId = body.sessionId // Mantém let para variáveis reatribuídas
 
     if (!message?.trim()) {
       throw createError({
@@ -36,17 +42,14 @@ export default defineEventHandler(async (event): Promise<ChatResponse> => {
       })
     }
 
-    // Gera sessionId se não existir
     if (!sessionId) {
       sessionId = Math.random().toString(36).substring(2, 15)
     }
 
-    // Recupera histórico da memória se existir
     if (conversationMemory.has(sessionId)) {
       context = conversationMemory.get(sessionId) || []
     }
 
-    // Prompt atualizado com informações específicas
     const systemPrompt = `Você é o assistente virtual da AutoShield Proteção Veicular, empresa fundada e dirigida por Felipe Moreira Rios.
     
     Informações essenciais:
@@ -68,7 +71,7 @@ export default defineEventHandler(async (event): Promise<ChatResponse> => {
     3. Finalizar com call-to-action relevante`
 
     const history = context
-      .slice(-8) // Mantém as últimas 8 mensagens
+      .slice(-8)
       .map(msg => `${msg.role === 'user' ? '[Cliente]' : '[Assistente]'} ${msg.content}`)
       .join('\n')
 
@@ -84,31 +87,32 @@ export default defineEventHandler(async (event): Promise<ChatResponse> => {
         top_p: 0.85,
         stop: ['[Cliente]', '[Assistente]']
       }
-    })
+    }) as HuggingFaceResponse
 
-    let reply = response.generated_text
-      .replace(fullPrompt, '')
-      .split('[Cliente]')[0]
-      .trim()
+    let reply = response.generated_text?.trim() || ''
 
-    // Fallback estratégico
-    if (reply.length < 15) {
-      reply = `Olá! Sou o assistente da AutoShield, fundada por Felipe Moreira Rios. Posso ajudar com:`
-      + `\n• Informações sobre planos\n• Ativação de coberturas\n• Promoções especiais`
+    if (reply) {
+      reply = reply
+        .replace(fullPrompt, '')
+        .split('[Cliente]')[0]
+        .trim()
     }
 
-    // Atualiza contexto
-    const newContext = [
-      ...context.slice(-14), // Mantém histórico equilibrado
-      { role: 'user', content: message },
-      { role: 'assistant', content: reply }
+    if (!reply || reply.length < 15) {
+      reply = `Olá! Sou o assistente da AutoShield, fundada por Felipe Moreira Rios. Posso ajudar com:`
+        + `\n• Informações sobre planos\n• Ativação de coberturas\n• Promoções especiais`
+    }
+
+    const newContext: ChatMessage[] = [
+      ...context.slice(-14),
+      { role: 'user' as const, content: message },
+      { role: 'assistant' as const, content: reply }
     ]
 
-    // Armazena na memória
     conversationMemory.set(sessionId, newContext)
 
     return {
-      reply: reply.replace(/(\d+)\./g, '•'), // Melhora formatação
+      reply: reply.replace(/(\d+)\./g, '•'),
       timestamp: new Date().toISOString(),
       context: newContext
     }
