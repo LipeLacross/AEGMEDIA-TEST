@@ -17,7 +17,7 @@ Projeto de landing page moderna para empresa de proteção veicular com intelig�
 - **Formulários Responsivos**: Cotação personalizada, formulários de contato e captura de dados otimizados para conversão.
 - **Interface Moderna**: Design responsivo com animações suaves, efeitos visuais e grid de planos interativos utilizando Tailwind CSS[2].
 - **SEO Otimizado**: Meta tags, estruturação semântica e performance otimizada para motores de busca.
-- **Análise de Sentimentos**: Sistema de feedback e depoimentos com avaliação em tempo real.
+- **Análise de Sentimentos**: Sistema de feedback e com avaliação em tempo real.
 - **Memória Conversacional**: Chatbot com histórico persistente de conversas e fluxos de qualificação automatizados[1].
 - **Rastreamento GPS**: Integração de monitoramento veicular em tempo real.
 - **Assistência 24h**: Sistema de atendimento contínuo com equipe especializada.
@@ -27,6 +27,8 @@ Projeto de landing page moderna para empresa de proteção veicular com intelig�
 - **Chatbot Flutuante**: Chatbot com IA responsiva e memória persistente.
 - **Newsletter e Links Importantes**: Footer com newsletter e links para políticas e termos.
 
+---
+### Exemplo Visual do Projeto	
 ---
 
 ## ✔️ Técnicas e Tecnologias Utilizadas

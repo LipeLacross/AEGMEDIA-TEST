@@ -1,10 +1,11 @@
-// server/api/chat.post.ts - Versão OTIMIZADA com Fluxo Simplificado
+// server/api/chat.post.ts - Versão Otimizada para Dúvidas de Produtos
 import { HfInference } from '@huggingface/inference'
 
 // === INTERFACES E TIPOS ===
 interface ChatMessage {
   role: 'user' | 'assistant' | 'system'
   content: string
+  timestamp?: string
 }
 
 interface ChatRequest {
@@ -21,79 +22,26 @@ interface ChatResponse {
   debug?: string
 }
 
-// Interface para dados do usuário
-interface UserData {
-  nome?: string
+interface ProductData {
+  interesse?: string
   veiculo?: string
-  ano?: string
-  valor?: number
-  telefone?: string
-  cidade?: string
-  confirmedData?: boolean
+  plano?: string
+  duvida?: string
+  categoria?: 'cobertura' | 'preco' | 'assistencia' | 'tecnologia' | 'documentacao' | 'geral'
 }
 
-// Estados simplificados da conversa
+// Estados simplificados para dúvidas de produtos
 enum ConversationState {
-  INITIAL = 'initial',
-  COLLECTING_DATA = 'collecting_data',
-  CONFIRMING_DATA = 'confirming_data',
-  ANSWERING_QUESTIONS = 'answering_questions',
-  GENERATING_OFFER = 'generating_offer'
+  INICIAL = 'inicial',
+  RESPONDENDO_DUVIDA = 'respondendo_duvida',
+  OFERECENDO_AJUDA = 'oferecendo_ajuda'
 }
 
 interface ConversationContext {
   state: ConversationState
-  userData: UserData
-  questionsAnswered: Set<string>
-  offerGenerated: boolean
-}
-function answerSpecificQuestion(message: string): string {
-  const lowerMessage = message.toLowerCase()
-
-  // Perguntas sobre número/telefone
-  if (lowerMessage.includes('numero') || lowerMessage.includes('número') ||
-      lowerMessage.includes('telefone') || lowerMessage.includes('contato')) {
-    return `📞 **Nossos Contatos AutoShield:**
-
-• **WhatsApp**: (74) 98125-6120
-• **Telefone**: (74) 98125-6120  
-• **Email**: contato@autoshield.com.br
-
-🕐 **Atendimento**: 24 horas por dia, 7 dias por semana
-
-Prefere falar pelo WhatsApp? É só clicar: https://wa.me/5574981256120`
-  }
-
-  // Perguntas sobre criação/fundação
-  if (lowerMessage.includes('criou') || lowerMessage.includes('fundou') ||
-      lowerMessage.includes('quem criou')) {
-    return `🏢 **Sobre a AutoShield:**
-
-A AutoShield é uma empresa brasileira fundada em 2023, especializada em proteção veicular com tecnologia de ponta.
-
-✨ **Nosso diferencial**: Somos pioneiros na integração de IA com rastreamento veicular no Brasil.
-
-🎯 **Missão**: Oferecer proteção veicular inteligente e acessível para todos os brasileiros.
-
-Quer saber mais sobre nossos serviços?`
-  }
-
-  return ''
-}
-function generateFallbackResponse(message: string): string {
-  return `🤔 Não encontrei informações específicas sobre "${message}".
-
-📞 **Para dúvidas não listadas, fale conosco:**
-• WhatsApp: (74) 98125-6120
-• Email: contato@autoshield.com.br
-
-💡 **Posso ajudar com:**
-• Planos e preços detalhados
-• Coberturas específicas
-• Processo de contratação
-• Informações sobre a empresa
-
-O que gostaria de saber?`
+  productData: ProductData
+  lastCategory: string
+  questionCount: number
 }
 
 // === CONFIGURAÇÕES OTIMIZADAS ===
@@ -102,8 +50,8 @@ const CONFIG = {
   TIMEOUT_MS: 6000,
   RETRY_DELAY_MS: 1000,
   MAX_SESSIONS: 50,
-  MAX_CONTEXT_MESSAGES: 15, // Otimizado para 15 mensagens
-  SESSION_TTL_MS: 20 * 60 * 1000 // 20 minutos
+  MAX_CONTEXT_MESSAGES: 15,
+  SESSION_TTL_MS: 20 * 60 * 1000
 } as const
 
 const STABLE_MODELS = [
@@ -112,212 +60,316 @@ const STABLE_MODELS = [
   'mistralai/Mistral-7B-Instruct-v0.2'
 ] as const
 
-// === BANCO DE CONHECIMENTO DA EMPRESA ===
-const COMPANY_KNOWLEDGE = {
-  contato: {
-    telefone: "(74) 98125-6120",
-    whatsapp: "(74) 98125-6120",
-    email: "contato@autoshield.com.br",
-    site: "www.autoshield.com.br",
-    endereco: "São Paulo, SP - Brasil"
-  },
-
-  empresa: {
-    nome: "AutoShield",
-    fundacao: "2023",
-    criador: "Empresa brasileira especializada em proteção veicular",
-    missao: "Oferecer proteção veicular inteligente com tecnologia de ponta",
-    diferencial: "Primeira empresa a integrar IA no rastreamento veicular no Brasil"
-  },
-
+// === BASE DE CONHECIMENTO DA EMPRESA ===
+const PRODUCT_KNOWLEDGE = {
   planos: {
     essencial: {
       preco: "R$ 89/mês",
-      descricao: "Cobertura roubo/furto, GPS grátis, assistência 24h, guincho até 200km, cobertura vidros",
-      ideal_para: "Veículos até R$ 50.000"
+      cobertura: "Roubo, furto, GPS grátis, assistência 24h, guincho até 200km, cobertura vidros",
+      publico: "Veículos até R$ 50.000"
     },
     completo: {
       preco: "R$ 149/mês",
-      descricao: "Tudo do Essencial + colisão, incêndio, terceiros R$ 50k, carro reserva 15 dias",
-      ideal_para: "Veículos até R$ 100.000"
+      cobertura: "Tudo do Essencial + colisão, incêndio, terceiros R$ 50k, carro reserva 15 dias",
+      publico: "Veículos até R$ 100.000"
     },
     premium: {
       preco: "R$ 229/mês",
-      descricao: "Tudo do Completo + fenômenos naturais, terceiros R$ 100k, carro reserva premium 30 dias",
-      ideal_para: "Veículos até R$ 200.000"
+      cobertura: "Tudo do Completo + fenômenos naturais, terceiros R$ 100k, carro reserva premium 30 dias",
+      publico: "Veículos até R$ 200.000"
     }
   },
 
-  cobertura: {
-    basica: "Roubo, furto, assistência 24h, guincho, chaveiro, vidros",
-    completa: "Colisão, incêndio, fenômenos naturais, terceiros",
-    diferencial: "Rastreamento GPS com IA gratuito em todos os planos"
+  coberturas: {
+    basicas: ["Roubo", "Furto", "Assistência 24h", "Guincho", "Chaveiro", "GPS com IA"],
+    intermediarias: ["Colisão", "Incêndio", "Cobertura de terceiros", "Carro reserva", "Vidros"],
+    avancadas: ["Fenômenos naturais", "Assistência residencial", "Consultoria jurídica"]
+  },
+
+  diferenciais: [
+    "GPS com IA gratuito (valor R$ 50/mês)",
+    "Sem carência para guincho e assistência",
+    "Preços transparentes, sem taxas ocultas",
+    "Atendimento com IA 24h no app",
+    "Cancelamento livre, sem multas",
+    "4.8⭐ de avaliação no Google"
+  ],
+
+  assistencia: {
+    tipos: ["Guincho ilimitado", "Chaveiro emergencial", "Pane seca", "Mecânico no local", "Assistência médica"],
+    cobertura: "Todo Brasil, 24 horas por dia",
+    carencia: "Sem carência para assistência - disponível imediatamente"
   },
 
   tecnologia: {
-    gps_ia: "Sistema de rastreamento com inteligência artificial integrada",
-    app: "Aplicativo exclusivo para clientes com monitoramento em tempo real",
-    assistencia: "Central 24h com atendimento automatizado por IA"
+    gps: "Rastreamento GPS com IA preditiva, alertas comportamentais e botão de pânico",
+    app: "App exclusivo para iOS e Android com todas as funcionalidades",
+    ia: "Chatbot com IA que resolve 95% das dúvidas instantaneamente"
+  },
+
+  documentacao: {
+    contrato: "Digital, sem burocracia",
+    aprovacao: "Análise em até 24h",
+    pagamento: "Débito automático, cartão ou PIX",
+    cancelamento: "Sem multa, processo em até 30 dias"
   }
 }
 
 // === FUNÇÕES DE ANÁLISE E RESPOSTA ===
 
-// Detecta se é pergunta sobre a empresa
-function isCompanyQuestion(message: string): boolean {
-  const questionKeywords = ['como', 'que', 'qual', 'quando', 'onde', 'por que', 'quanto', '?']
-  const companyKeywords = ['autoshield', 'empresa', 'plano', 'preço', 'cobertura', 'assistência', 'guincho']
-
-  const hasQuestion = questionKeywords.some(word => message.toLowerCase().includes(word))
-  const hasCompanyTopic = companyKeywords.some(word => message.toLowerCase().includes(word))
-
-  return hasQuestion && hasCompanyTopic
-}
-
-// Responde perguntas sobre a empresa
-function answerCompanyQuestion(message: string): string {
+// Detecta categoria da pergunta
+function detectQuestionCategory(message: string): string {
   const lowerMessage = message.toLowerCase()
 
-  if (lowerMessage.includes('preço') || lowerMessage.includes('valor') || lowerMessage.includes('quanto custa')) {
-    return `💰 **Nossos Planos AutoShield:**
+  if (lowerMessage.includes('preço') || lowerMessage.includes('valor') || lowerMessage.includes('custa') || lowerMessage.includes('quanto')) {
+    return 'preco'
+  }
 
-• **Essencial**: R$ 89/mês - Proteção completa básica
-• **Completo**: R$ 149/mês - Proteção total + benefícios
-• **Premium**: R$ 229/mês - Máxima proteção VIP
+  if (lowerMessage.includes('cobertura') || lowerMessage.includes('cobre') || lowerMessage.includes('protege') || lowerMessage.includes('inclui')) {
+    return 'cobertura'
+  }
+
+  if (lowerMessage.includes('assistência') || lowerMessage.includes('guincho') || lowerMessage.includes('24h') || lowerMessage.includes('atendimento')) {
+    return 'assistencia'
+  }
+
+  if (lowerMessage.includes('gps') || lowerMessage.includes('app') || lowerMessage.includes('tecnologia') || lowerMessage.includes('rastreamento')) {
+    return 'tecnologia'
+  }
+
+  if (lowerMessage.includes('contrato') || lowerMessage.includes('documento') || lowerMessage.includes('aprovação') || lowerMessage.includes('cancelar')) {
+    return 'documentacao'
+  }
+
+  return 'geral'
+}
+
+// Responde perguntas sobre produtos de forma inteligente
+function answerProductQuestion(message: string, category: string): string {
+  const lowerMessage = message.toLowerCase()
+
+  switch (category) {
+    case 'preco':
+      if (lowerMessage.includes('essencial')) {
+        return `💰 **Plano Essencial**: ${PRODUCT_KNOWLEDGE.planos.essencial.preco}
+        
+📋 **Inclui**: ${PRODUCT_KNOWLEDGE.planos.essencial.cobertura}
+📞 **Ideal para**: ${PRODUCT_KNOWLEDGE.planos.essencial.publico}
+
+🎁 **Desconto especial**: 15% OFF na primeira parcela!
+
+Quer saber sobre outros planos ou tem alguma dúvida específica?`
+      }
+
+      if (lowerMessage.includes('completo')) {
+        return `💰 **Plano Completo**: ${PRODUCT_KNOWLEDGE.planos.completo.preco}
+        
+📋 **Inclui**: ${PRODUCT_KNOWLEDGE.planos.completo.cobertura}
+📞 **Ideal para**: ${PRODUCT_KNOWLEDGE.planos.completo.publico}
+
+⭐ **Mais Popular!** 70% dos clientes escolhem este plano.
+
+Posso esclarecer algum detalhe específico da cobertura?`
+      }
+
+      if (lowerMessage.includes('premium')) {
+        return `💰 **Plano Premium**: ${PRODUCT_KNOWLEDGE.planos.premium.preco}
+        
+📋 **Inclui**: ${PRODUCT_KNOWLEDGE.planos.premium.cobertura}
+📞 **Ideal para**: ${PRODUCT_KNOWLEDGE.planos.premium.publico}
+
+👑 **Máxima Proteção** com serviços VIP inclusos.
+
+Gostaria de saber mais sobre os benefícios exclusivos?`
+      }
+
+      return `💰 **Nossos Planos AutoShield**:
+
+• **Essencial**: ${PRODUCT_KNOWLEDGE.planos.essencial.preco} - Proteção completa básica
+• **Completo**: ${PRODUCT_KNOWLEDGE.planos.completo.preco} - Proteção total + benefícios ⭐
+• **Premium**: ${PRODUCT_KNOWLEDGE.planos.premium.preco} - Máxima proteção VIP
 
 🎁 **Todos incluem GPS com IA GRÁTIS!**
 
-Qual plano te interessa mais?`
-  }
+Sobre qual plano gostaria de saber mais detalhes?`
 
-  if (lowerMessage.includes('cobertura') || lowerMessage.includes('cobre') || lowerMessage.includes('protege')) {
-    return `🛡️ **Nossa Cobertura Completa:**
+    case 'cobertura':
+      if (lowerMessage.includes('essencial') || lowerMessage.includes('básico')) {
+        return `🛡️ **Cobertura Plano Essencial**:
 
-✅ Roubo e Furto total
-✅ Colisão e Incêndio  
-✅ Assistência 24h em todo Brasil
-✅ Guincho ilimitado
-✅ Rastreamento GPS com IA
-✅ Cobertura de terceiros
-✅ Chaveiro e vidros
+✅ ${PRODUCT_KNOWLEDGE.planos.essencial.cobertura}
 
-Quer saber mais sobre alguma cobertura específica?`
-  }
+🚨 **Sem carência** para assistência!
+🎁 **GPS com IA** no valor de R$ 50/mês - **GRÁTIS**
 
-  if (lowerMessage.includes('assistência') || lowerMessage.includes('guincho') || lowerMessage.includes('24h')) {
-    return `🚗 **Assistência 24h AutoShield:**
+Tem alguma dúvida específica sobre essa cobertura?`
+      }
 
-• Guincho ilimitado em todo Brasil
-• Chaveiro emergencial
-• Pane seca e elétrica
-• Mecânico no local
-• Assistência médica
-• Carro reserva (planos Completo/Premium)
+      return `🛡️ **Nossa Cobertura Completa**:
 
-**SEM CARÊNCIA** para assistência! Disponível imediatamente após aprovação.
+**📋 Coberturas Básicas:**
+${PRODUCT_KNOWLEDGE.coberturas.basicas.map(item => `• ${item}`).join('\n')}
 
-Precisa de mais alguma informação?`
-  }
+**⚡ Coberturas Intermediárias:**
+${PRODUCT_KNOWLEDGE.coberturas.intermediarias.map(item => `• ${item}`).join('\n')}
 
-  if (lowerMessage.includes('diferencial') || lowerMessage.includes('vantagem') || lowerMessage.includes('melhor')) {
-    return `🌟 **Nossos Diferenciais Únicos:**
+**👑 Coberturas Avançadas:**
+${PRODUCT_KNOWLEDGE.coberturas.avancadas.map(item => `• ${item}`).join('\n')}
 
-🔥 GPS com IA **GRATUITO** (valor R$ 50/mês)
-⚡ Sem carência para guincho e assistência
-💰 Preços transparentes, sem taxas ocultas
-🚀 Atendimento com IA 24h no app
-📱 Cancelamento livre, sem multas
-🏆 4.8⭐ de avaliação no Google
+Sobre qual cobertura específica gostaria de mais detalhes?`
 
-Qual diferencial mais te chama atenção?`
-  }
+    case 'assistencia':
+      return `🚗 **Assistência 24h AutoShield**:
 
-  // Resposta genérica para outras perguntas
-  return `📋 **Sobre a AutoShield:**
+**🔧 Serviços Disponíveis:**
+${PRODUCT_KNOWLEDGE.assistencia.tipos.map(item => `• ${item}`).join('\n')}
 
-Somos especialistas em proteção veicular com tecnologia de ponta. Oferecemos 3 planos (R$ 89, R$ 149, R$ 229) com cobertura completa e assistência 24h.
+**📍 Cobertura:** ${PRODUCT_KNOWLEDGE.assistencia.cobertura}
+**⚡ Carência:** ${PRODUCT_KNOWLEDGE.assistencia.carencia}
 
-**Principais dúvidas:**
-• Preços e planos
-• Coberturas incluídas  
-• Assistência 24h
-• Nossos diferenciais
+**📱 Como solicitar:**
+• App AutoShield (mais rápido)
+• WhatsApp: (74) 98125-6120
+• Central 24h
+
+Precisa de algum esclarecimento sobre a assistência?`
+
+    case 'tecnologia':
+      return `🚀 **Tecnologia AutoShield**:
+
+**📱 GPS com IA:**
+${PRODUCT_KNOWLEDGE.tecnologia.gps}
+
+**📲 App Exclusivo:**
+${PRODUCT_KNOWLEDGE.tecnologia.app}
+
+**🤖 Assistente IA:**
+${PRODUCT_KNOWLEDGE.tecnologia.ia}
+
+**🎁 Diferencial:** GPS que custa R$ 50/mês em outras empresas é **GRATUITO** conosco!
+
+Quer saber mais sobre alguma funcionalidade específica?`
+
+    case 'documentacao':
+      return `📋 **Documentação e Processos**:
+
+**✍️ Contrato:** ${PRODUCT_KNOWLEDGE.documentacao.contrato}
+**⚡ Aprovação:** ${PRODUCT_KNOWLEDGE.documentacao.aprovacao}
+**💳 Pagamento:** ${PRODUCT_KNOWLEDGE.documentacao.pagamento}
+**🚪 Cancelamento:** ${PRODUCT_KNOWLEDGE.documentacao.cancelamento}
+
+**📄 Documentos necessários:**
+• RG e CPF
+• CNH válida
+• Comprovante de residência
+• Documento do veículo
+
+Tem alguma dúvida sobre o processo?`
+
+    default:
+      return `🤔 **Como posso ajudar?**
+
+**🔍 Posso esclarecer sobre:**
+• **Preços e planos** (Essencial, Completo, Premium)
+• **Coberturas** (O que está incluído em cada plano)
+• **Assistência 24h** (Guincho, chaveiro, etc.)
+• **Tecnologia** (GPS com IA, App, funcionalidades)
+• **Documentação** (Contrato, aprovação, cancelamento)
+
+**💬 Também posso:**
+• Comparar planos
+• Explicar diferenciais
+• Orientar sobre documentos
 
 Sobre o que gostaria de saber mais?`
+  }
 }
 
-// Extração otimizada de dados
-function extractUserData(currentData: UserData, message: string): UserData {
-  const updatedData = { ...currentData }
+// Detecta ofertas ou interesse comercial
+function shouldOfferHelp(message: string, questionCount: number): boolean {
+  const lowerMessage = message.toLowerCase()
+  const commercialKeywords = ['contratar', 'interessado', 'quero', 'preciso', 'cotação', 'proposta']
 
-  // Nome
-  const nomePatterns = [
-    /(?:meu nome é|me chamo|sou o|sou a)\s+([a-záàâãéèêíïóôõöúçñ\s]+)/i,
-    /^([a-záàâãéèêíïóôõöúçñ]{3,})\s*$/i
+  return commercialKeywords.some(keyword => lowerMessage.includes(keyword)) || questionCount >= 3
+}
+
+// Gera oferta contextual
+function generateContextualOffer(productData: ProductData): string {
+  const offers = [
+    "🔥 **Oferta Especial**: 15% OFF na primeira parcela",
+    "🎁 **GPS com IA** no valor de R$ 50/mês - **GRÁTIS**",
+    "⚡ **Sem carência** para assistência",
+    "📱 **App exclusivo** com todas as funcionalidades"
   ]
 
-  for (const pattern of nomePatterns) {
-    const match = message.match(pattern)
-    if (match && match[1] && !updatedData.nome) {
-      updatedData.nome = match[1].trim()
-      break
-    }
-  }
+  const selectedOffer = offers[Math.floor(Math.random() * offers.length)]
 
-  // Veículo
-  const veiculoPatterns = [
-    /(?:tenho um|meu carro é|dirigir um)\s+([a-záàâãéèêíïóôõöúçñ\s\d]+)/i,
-    /(civic|corolla|onix|hb20|gol|uno|palio|fiesta|ka|celta|prisma)/i
-  ]
+  return `${selectedOffer}
 
-  for (const pattern of veiculoPatterns) {
-    const match = message.match(pattern)
-    if (match && match[1] && !updatedData.veiculo) {
-      updatedData.veiculo = match[1].trim()
-      break
-    }
-  }
+📱 **Fale com nossa equipe:**
+WhatsApp: (74) 98125-6120
 
-  // Telefone
-  const telefoneMatch = message.match(/(\(?[1-9]{2}\)?\s?9?\d{4}-?\d{4})/g)
-  if (telefoneMatch && !updatedData.telefone) {
-    updatedData.telefone = telefoneMatch[0]
-  }
-
-  // Ano
-  const anoMatch = message.match(/(20\d{2}|19\d{2})/g)
-  if (anoMatch && !updatedData.ano) {
-    const ano = parseInt(anoMatch[0])
-    if (ano >= 1990 && ano <= 2025) {
-      updatedData.ano = ano.toString()
-    }
-  }
-
-  // Valor simplificado
-  const valorMatch = message.match(/(\d+\.?\d*)\s*(?:mil|k)/i)
-  if (valorMatch && valorMatch[1] && !updatedData.valor) {
-    updatedData.valor = parseInt(valorMatch[1]) * 1000
-  }
-
-
-  return updatedData
+Nossa equipe especializada está pronta para criar sua proposta personalizada!`
 }
 
-// Verifica se tem dados suficientes (simplificado)
-function hasSufficientData(userData: UserData): boolean {
-  return !!(userData.nome && userData.veiculo && userData.telefone)
-}
-
-// Gera link do WhatsApp otimizado
-function generateWhatsAppLink(userData: UserData): string {
-  const baseMessage = `Olá! Sou ${userData.nome}. Tenho interesse na proteção AutoShield para meu ${userData.veiculo}${userData.ano ? ` (${userData.ano})` : ''}. Gostaria de uma proposta personalizada.`
-
-  return `https://wa.me/5574981256120?text=${encodeURIComponent(baseMessage)}`
-}
-
-// === IMPLEMENTAÇÃO PRINCIPAL OTIMIZADA ===
+// === IMPLEMENTAÇÃO PRINCIPAL ===
 const hf = new HfInference(process.env.HUGGINGFACE_TOKEN)
 const conversationMemory = new Map<string, ConversationContext>()
+
+// Função auxiliar para validação de token
+const validateToken = (token: string | undefined): boolean => {
+  return token !== undefined && token.startsWith('hf_') && token.length > 20
+}
+
+// Fallback inteligente para produtos
+const getProductFallback = (message: string, category: string): string => {
+  return answerProductQuestion(message, category)
+}
+
+// Tentativa com modelos estáveis
+const tryWithStableModels = async (messages: ChatMessage[]): Promise<string> => {
+  for (const model of STABLE_MODELS) {
+    try {
+      console.log(`🤖 Testando modelo: ${model}`)
+
+      const response = await Promise.race([
+        hf.chatCompletion({
+          model,
+          messages: messages.map(msg => ({
+            role: msg.role as 'user' | 'assistant' | 'system',
+            content: msg.content
+          })),
+          max_tokens: 200,
+          temperature: 0.7,
+          top_p: 0.9
+        }),
+        new Promise<never>((_, reject) =>
+          setTimeout(() => reject(new Error('TIMEOUT')), CONFIG.TIMEOUT_MS)
+        )
+      ])
+
+      if (response?.choices?.[0]?.message?.content) {
+        console.log(`✅ Sucesso com modelo: ${model}`)
+        return response.choices[0].message.content.trim()
+      }
+    } catch (error: unknown) {
+      const errorMessage = error instanceof Error ? error.message : 'Erro desconhecido'
+      console.error(`❌ Modelo ${model} falhou:`, errorMessage)
+      continue
+    }
+  }
+
+  return ''
+}
+
+// Limpeza de sessões
+const cleanupSessions = (conversationMemory: Map<string, ConversationContext>): void => {
+  if (conversationMemory.size > CONFIG.MAX_SESSIONS) {
+    const keys = Array.from(conversationMemory.keys())
+    const keysToDelete = keys.slice(0, Math.floor(CONFIG.MAX_SESSIONS * 0.2))
+    keysToDelete.forEach(key => conversationMemory.delete(key))
+  }
+}
 
 export default defineEventHandler(async (event): Promise<ChatResponse> => {
   try {
@@ -334,166 +386,110 @@ export default defineEventHandler(async (event): Promise<ChatResponse> => {
       })
     }
 
+    // Limpeza periódica
+    cleanupSessions(conversationMemory)
+
     // Recuperar ou criar contexto
     let conversationContext: ConversationContext
     if (conversationMemory.has(sessionId)) {
       conversationContext = conversationMemory.get(sessionId)!
+      conversationContext.questionCount++
     } else {
       conversationContext = {
-        state: ConversationState.INITIAL,
-        userData: {},
-        questionsAnswered: new Set(),
-        offerGenerated: false
+        state: ConversationState.INICIAL,
+        productData: {},
+        lastCategory: '',
+        questionCount: 1
       }
     }
+
+    // Detectar categoria da pergunta
+    const category = detectQuestionCategory(message)
+    conversationContext.lastCategory = category
+    conversationContext.productData.categoria = category as any
 
     let reply = ''
 
-    // === FLUXO OTIMIZADO DE CONVERSA ===
+    // === LÓGICA PRINCIPAL DE RESPOSTA ===
 
-    // 1. PRIMEIRA PRIORIDADE: Responder dúvidas sobre a empresa
-    if (isCompanyQuestion(message)) {
-      conversationContext.state = ConversationState.ANSWERING_QUESTIONS
-      reply = answerCompanyQuestion(message)
+    // 1. PRIMEIRA PRIORIDADE: Responder dúvidas sobre produtos
+    const directAnswer = answerProductQuestion(message, category)
 
-      // Após responder, sugere avançar se já tiver alguns dados
-      if (Object.keys(conversationContext.userData).length > 0) {
-        reply += `\n\n💬 Já que você tem interesse, que tal finalizarmos sua proposta rapidinho?`
+    if (directAnswer && !directAnswer.includes('Como posso ajudar?')) {
+      reply = directAnswer
+      conversationContext.state = ConversationState.RESPONDENDO_DUVIDA
+
+      // Adicionar oferta contextual se aplicável
+      if (shouldOfferHelp(message, conversationContext.questionCount)) {
+        reply += `\n\n${generateContextualOffer(conversationContext.productData)}`
+        conversationContext.state = ConversationState.OFERECENDO_AJUDA
       }
-    }
-    // 2. FLUXO DE QUALIFICAÇÃO SIMPLIFICADO
-    else {
-      switch (conversationContext.state) {
-        case ConversationState.INITIAL:
-        case ConversationState.ANSWERING_QUESTIONS:
-          // Extrair dados da mensagem atual
-          conversationContext.userData = extractUserData(conversationContext.userData, message)
+    } else {
+      // 2. Tentar com IA se não encontrou resposta direta
+      const token = process.env.HUGGINGFACE_TOKEN
 
-          if (hasSufficientData(conversationContext.userData)) {
-            // Dados suficientes - pular para confirmação
-            conversationContext.state = ConversationState.CONFIRMING_DATA
-            reply = `✅ Perfeito! Vou confirmar seus dados:
+      if (validateToken(token)) {
+        const systemPrompt = `Você é o assistente especialista da AutoShield, empresa de proteção veicular.
 
-📝 **Seus Dados:**
-• Nome: ${conversationContext.userData.nome}
-• Veículo: ${conversationContext.userData.veiculo}${conversationContext.userData.ano ? ` (${conversationContext.userData.ano})` : ''}
-• WhatsApp: ${conversationContext.userData.telefone}
+FOQUE APENAS EM: Responder dúvidas sobre produtos, planos, coberturas, tecnologia e ofertas.
 
-Está tudo correto? Digite **SIM** para continuar ou **NÃO** para corrigir.`
-          } else {
-            // Coletar dados que faltam de forma inteligente
-            conversationContext.state = ConversationState.COLLECTING_DATA
-            const missingData = []
+PRODUTOS DISPONÍVEIS:
+- Plano Essencial: R$ 89/mês (até R$ 50.000)
+- Plano Completo: R$ 149/mês (até R$ 100.000) 
+- Plano Premium: R$ 229/mês (até R$ 200.000)
 
-            if (!conversationContext.userData.nome) missingData.push('seu nome')
-            if (!conversationContext.userData.veiculo) missingData.push('seu veículo (marca/modelo)')
-            if (!conversationContext.userData.telefone) missingData.push('seu WhatsApp')
+DIFERENCIAIS:
+- GPS com IA GRATUITO
+- Sem carência para assistência
+- Cobertura completa 24h
+- App exclusivo
 
-            if (missingData.length === 3) {
-              reply = `👋 Olá! Sou o consultor AutoShield. Para criar sua proposta personalizada, preciso apenas de:
+INSTRUÇÕES:
+1. Responda APENAS dúvidas sobre produtos AutoShield
+2. Seja objetivo e técnico
+3. Sempre mencione benefícios
+4. Direcione para WhatsApp (74) 98125-6120 quando apropriado
+5. Use emojis para destacar informações
 
-📋 **Me conte rapidinho:**
-• Seu nome
-• Que carro você tem
-• Seu WhatsApp
+Se a pergunta não for sobre produtos AutoShield, redirecione educadamente para assuntos relevantes.`
 
-Pode mandar tudo numa mensagem só! 😉`
-            } else {
-              reply = `📋 Quase pronto! Só preciso de mais: **${missingData.join(' e ')}**.
+        const messages: ChatMessage[] = [
+          { role: 'system' as const, content: systemPrompt },
+          ...context.slice(-CONFIG.MAX_CONTEXT_MESSAGES),
+          { role: 'user' as const, content: `[CATEGORIA: ${category}] ${message}` }
+        ]
 
-Pode me informar?`
-            }
+        try {
+          reply = await tryWithStableModels(messages)
+          if (!reply || reply.length < 10) {
+            reply = getProductFallback(message, category)
           }
-          break
-
-        case ConversationState.COLLECTING_DATA:
-          // Continuar coletando dados
-          conversationContext.userData = extractUserData(conversationContext.userData, message)
-
-          if (hasSufficientData(conversationContext.userData)) {
-            conversationContext.state = ConversationState.CONFIRMING_DATA
-            reply = `✅ Ótimo! Confirmando seus dados:
-
-📝 **Seus Dados:**
-• Nome: ${conversationContext.userData.nome}
-• Veículo: ${conversationContext.userData.veiculo}${conversationContext.userData.ano ? ` (${conversationContext.userData.ano})` : ''}
-• WhatsApp: ${conversationContext.userData.telefone}
-
-Está correto? **SIM** ou **NÃO**?`
-          } else {
-            const missingData = []
-            if (!conversationContext.userData.nome) missingData.push('nome')
-            if (!conversationContext.userData.veiculo) missingData.push('veículo')
-            if (!conversationContext.userData.telefone) missingData.push('WhatsApp')
-
-            reply = `📋 Ainda preciso de: **${missingData.join(', ')}**. Pode completar para mim?`
-          }
-          break
-
-        case ConversationState.CONFIRMING_DATA:
-          if (message.toLowerCase().includes('sim')) {
-            conversationContext.state = ConversationState.GENERATING_OFFER
-            const whatsappLink = generateWhatsAppLink(conversationContext.userData)
-
-            reply = `🎉 **Proposta AutoShield para ${conversationContext.userData.nome}!**
-
-🔥 **OFERTA ESPECIAL:**
-• 15% OFF na primeira parcela
-• GPS com IA GRATUITO (valor R$ 50/mês)
-• Sem carência para assistência
-• Cobertura imediata
-
-💰 **Planos disponíveis:**
-• Essencial: R$ 89/mês
-• Completo: R$ 149/mês  
-• Premium: R$ 229/mês
-
-📱 **Finalize agora pelo WhatsApp:**
-${whatsappLink}
-
-Nossa equipe especializada vai atender você em segundos! 🚀`
-
-            conversationContext.offerGenerated = true
-          } else if (message.toLowerCase().includes('não')) {
-            conversationContext.state = ConversationState.COLLECTING_DATA
-            reply = `✏️ Sem problema! O que precisa corrigir?
-
-• **Nome**: ${conversationContext.userData.nome || 'não informado'}
-• **Veículo**: ${conversationContext.userData.veiculo || 'não informado'}  
-• **WhatsApp**: ${conversationContext.userData.telefone || 'não informado'}
-
-Me diga o que está errado.`
-          } else {
-            reply = `🤔 Por favor, responda **SIM** para confirmar ou **NÃO** para corrigir os dados.`
-          }
-          break
-
-        case ConversationState.GENERATING_OFFER:
-          reply = `✅ Sua proposta já foi gerada!
-
-📱 **Link direto do WhatsApp:**
-${generateWhatsAppLink(conversationContext.userData)}
-
-Tem alguma dúvida sobre nossos planos ou coberturas?`
-          break
+        } catch (error) {
+          reply = getProductFallback(message, category)
+        }
+      } else {
+        reply = getProductFallback(message, category)
       }
     }
 
     // Garantir que sempre há uma resposta
     if (!reply) {
-      reply = `👋 Olá! Sou o assistente AutoShield. Como posso ajudar?
+      reply = `👋 Olá! Sou o assistente AutoShield.
 
-🤔 **Posso esclarecer sobre:**
-• Planos e preços
-• Coberturas e assistência
-• Fazer sua cotação
+🚗 **Especialista em:**
+• Planos de proteção veicular
+• Coberturas e benefícios  
+• Tecnologia e diferenciais
+• Preços e ofertas
 
-O que gostaria de saber?`
+📞 **Contato direto:** (74) 98125-6120
+
+Como posso esclarecer suas dúvidas sobre nossos produtos?`
     }
 
-    // Atualizar contexto com limite otimizado
+    // Atualizar contexto
     const newContext: ChatMessage[] = [
-      ...context.slice(-(CONFIG.MAX_CONTEXT_MESSAGES - 2)), // Manter espaço para as novas mensagens
+      ...context.slice(-(CONFIG.MAX_CONTEXT_MESSAGES - 2)),
       { role: 'user' as const, content: message },
       { role: 'assistant' as const, content: reply }
     ]
@@ -515,7 +511,7 @@ O que gostaria de saber?`
 📞 **Contato direto:**
 WhatsApp: (74) 98125-6120
 
-Nossa equipe está pronta para atender você!`,
+Nossa equipe está pronta para esclarecer todas suas dúvidas sobre nossos produtos!`,
       context: [],
       error: true,
       timestamp: new Date().toISOString()

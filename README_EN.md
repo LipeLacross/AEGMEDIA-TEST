@@ -28,7 +28,9 @@ Modern landing page project for a vehicle protection company with integrated art
 - **Newsletter & Important Links:** Footer with newsletter and links to policies and terms.
 
 ---
+###Project Visual Example
 
+---
 ## ✔️ Techniques and Technologies Used
 
 ### **Frontend and Framework**
