@@ -143,7 +143,7 @@
               </p>
               <div class="mt-2 text-xs text-gray-500">
                 Última atualização: 12/06/2025<br>
-                Política de Privacidade: <a href="/privacidade" class="text-primary-500 hover:underline">Clique aqui</a>
+                Política de Privacidade: <a href="/privacy" class="text-primary-500 hover:underline">Clique aqui</a>
               </div>
             </div>
           </div>

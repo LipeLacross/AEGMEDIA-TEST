@@ -23,7 +23,7 @@ interface ChatResponse {
 // Configurações otimizadas para evitar ECONNRESET
 const CONFIG = {
   MAX_RETRIES: 3,
-  TIMEOUT_MS: 5000,
+  TIMEOUT_MS: 15000,
   RETRY_DELAY_MS: 1000,
   MAX_SESSIONS: 100,
   SESSION_TTL_MS: 30 * 60 * 1000,

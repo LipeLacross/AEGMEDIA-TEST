@@ -172,7 +172,7 @@
               <div class="mt-3 text-xs text-gray-500">
                 Última atualização: 12/06/2025<br>
                 Contato para reclamações: <a href="mailto:ouvidoria@autoshield.com.br" class="text-primary-500 hover:underline">ouvidoria@autoshield.com.br</a><br>
-                <a href="/termos" class="text-primary-500 hover:underline">Termos de Uso</a> • <a href="/cookies" class="text-primary-500 hover:underline">Política de Cookies</a>
+                <a href="/terms" class="text-primary-500 hover:underline">Termos de Uso</a> • <a href="/cookies" class="text-primary-500 hover:underline">Política de Cookies</a>
               </div>
             </div>
           </div>
