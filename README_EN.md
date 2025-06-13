@@ -21,6 +21,10 @@ Modern landing page for a vehicle protection company, developed with Nuxt.js, Vu
 - **Floating Chatbot**: Responsive AI chatbot with persistent memory.
 - **Newsletter and Important Links**: Footer with newsletter and links to policies and terms.
 
+### Visual Project Example	
+
+- https://youtu.be/gik2RjL4u84
+- 
 ## Techniques and Technologies Used
 
 - **Nuxt.js**: Vue.js framework with SSR, automatic optimizations, and hybrid rendering.

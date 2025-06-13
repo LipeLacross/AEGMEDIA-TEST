@@ -1,4 +1,4 @@
-## 🌐 [English Version of README](README_EN.md)
+`## 🌐 [English Version of README](README_EN.md)
 
 # AutoShield – Landing Page com IA Integrada
 
@@ -20,6 +20,10 @@ Landing page moderna para empresa de proteção veicular, desenvolvida com Nuxt.
 - **FAQ Interativo**: Perguntas frequentes com expandir/colapsar.
 - **Chatbot Flutuante**: Chatbot com IA responsiva e memória persistente.
 - **Newsletter e Links Importantes**: Footer com newsletter e links para políticas e termos.
+
+### Exemplo Visual do Projeto	
+
+- https://youtu.be/gik2RjL4u84
 
 ## Técnicas e Tecnologias Utilizadas
 
