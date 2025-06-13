@@ -16,6 +16,7 @@
   },
   "dependencies": {
     "@emailjs/browser": "^4.4.1",
+    "@esbuild/linux-x64": "^0.25.5",
     "@headlessui/vue": "^1.7.23",
     "@heroicons/vue": "^2.1.5",
     "@huggingface/inference": "^4.0.4",
@@ -60,9 +61,6 @@
   "engines": {
     "node": "22.16.0",
     "npm": ">=8.0.0"
-  },
-  "optionalDependencies": {
-    "@rollup/rollup-linux-x64-gnu": "4.43.0"
   },
   "keywords": [
     "nuxt",
