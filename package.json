@@ -42,7 +42,7 @@
     "nuxt-svgo-loader": "^0.5.0",
     "oxc-parser": "^0.72.3",
     "typescript": "^5.8.3",
-    "vue": "^3.5.16",
+    "vue": "^3.5.18",
     "vue-material-design-icons": "^5.3.1",
     "vue-router": "^4.5.1",
     "vue3-smooth-scroll": "^0.8.1"
