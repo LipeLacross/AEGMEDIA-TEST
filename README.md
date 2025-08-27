@@ -1,4 +1,4 @@
-`## 🌐 [English Version of README](README_EN.md)
+## 🌐 [English Version of README](README_EN.md)
 
 # AutoShield – Landing Page com IA Integrada
 
